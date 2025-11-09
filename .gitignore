@@ -1,0 +1,35 @@
+# Temporary and log files
+*.log
+*.tmp
+**/log
+**/tmp
+*.out
+**/outputs/
+**/no_backup
+*.pkl
+
+# environment stuff
+.env
+.venv
+venv/
+ENV/
+
+# vscode
+.vscode/
+
+# Python byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+
+# Figures and output files
+*.png
+*.jpg
+*.pdf
+*.csv
+*.prof
+
+# Config yaml files
+**/config_*.yaml
+
+# Experiments
+**/experiments/*
