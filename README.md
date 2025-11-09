@@ -59,7 +59,7 @@ If the memory compiler is not available by hand, the repository has incorporated
 Since cost model validation is important for analytical simulation framework, we have conducted several model validations against state-of-the-art accelerators. Relevant scripts are under the folder [./model_validation](./model_validation/) (please see the readme within the folder for further details). The validation result is shown below.
 
 <p align="center">
-<img src="./model_validation/validation.pdf" width="100%" alt="model validation plot">
+<img src="./model_validation/validation.png" width="100%" alt="model validation plot">
 </p>
 
 ## **Re-generate the results in the paper**
