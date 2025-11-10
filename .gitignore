@@ -33,3 +33,6 @@ __pycache__/
 
 # Experiments
 **/experiments/*
+
+# CACTI
+**/self_gen/*.cfg
