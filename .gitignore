@@ -35,4 +35,4 @@ __pycache__/
 **/experiments/*
 
 # CACTI
-**/self_gen/*.cfg
+cacti/cacti_master/self_gen/*
