@@ -2,10 +2,11 @@ import copy
 import math
 import numpy as np
 
+
 def cost_model(
-        hw_model: dict,
-        workload: dict,
-        mapping: dict,
+    hw_model: dict,
+    workload: dict,
+    mapping: dict,
 ) -> dict:
     """
     Cost model for Ising hardware accelerator.
@@ -21,8 +22,8 @@ def cost_model(
     # extract the hardware dimension size
     hw_dim_sizes = {}
     for dim, size in zip(
-            hw_model["operational_array"]["dimensions"],
-            hw_model["operational_array"]["sizes"],
+        hw_model["operational_array"]["dimensions"],
+        hw_model["operational_array"]["sizes"],
     ):
         hw_dim_sizes[dim] = size
     mac_count = np.prod([size for size in hw_dim_sizes.values()], dtype=np.int64)
@@ -30,8 +31,8 @@ def cost_model(
     # extract the workload dimension size
     workload_dim_sizes = {}
     for dim, size in zip(
-            workload["loop_dims"],
-            workload["loop_sizes"],
+        workload["loop_dims"],
+        workload["loop_sizes"],
     ):
         workload_dim_sizes[dim] = size
     workload_dim_sizes["T"] = workload["num_trails"]
@@ -45,9 +46,13 @@ def cost_model(
     elif encoding_scheme == "triangular":  # triangular, without compression
         bit_per_weight = workload["operand_precision"]["W"] // 2
     elif encoding_scheme == "coordinate":  # csr
-        bit_per_weight = workload["operand_precision"]["W"] + math.ceil(math.log2(workload_dim_sizes["J"]))
+        bit_per_weight = workload["operand_precision"]["W"] + math.ceil(
+            math.log2(workload_dim_sizes["J"])
+        )
     elif encoding_scheme == "neighbor":  # sachi's custom encoding
-        bit_per_weight = workload["operand_precision"]["W"] + workload["operand_precision"]["I"]
+        bit_per_weight = (
+            workload["operand_precision"]["W"] + workload["operand_precision"]["I"]
+        )
 
     # calculate the total area
     area_collect = {}
@@ -84,24 +89,30 @@ def cost_model(
     cim_memory_depth = cim_memory_size / cim_memory_bandwidth
     # constrain the parfor size by hardware/workload dimension sizes
     for d, item in spatial_mapping_hint.items():
-        if (d == "D3"):
-            parfor_hw[d] = min(hw_dim_sizes[d], workload_dim_sizes[item]/parfor_sw[item])
-        elif (d == "D1"):
+        if d == "D3":
+            parfor_hw[d] = min(
+                hw_dim_sizes[d], workload_dim_sizes[item] / parfor_sw[item]
+            )
+        elif d == "D1":
             parfor_hw[d] = 1  # fix D1 to 1 to match SACHI's design
         else:
-            parfor_hw[d] = min(hw_dim_sizes[d], workload_dim_sizes[item]/parfor_sw[item])
-        parfor_hw[d] = max(1, parfor_hw[d]) # ensure at least 1
+            parfor_hw[d] = min(
+                hw_dim_sizes[d], workload_dim_sizes[item] / parfor_sw[item]
+            )
+        parfor_hw[d] = max(1, parfor_hw[d])  # ensure at least 1
     # constrain the parfor size by the lowest memory bandwidth
     for dim_hw in ["D2", "D1"]:
         parfor_size_hw = parfor_hw[dim_hw]
         if dim_hw == "D2":
             allowed_parfor_by_memory = max(1, cim_memory_bandwidth / bit_per_weight)
         else:
-            allowed_parfor_by_memory = max(1, cim_memory_bandwidth / bit_per_weight / parfor_hw["D2"])
+            allowed_parfor_by_memory = max(
+                1, cim_memory_bandwidth / bit_per_weight / parfor_hw["D2"]
+            )
         if parfor_size_hw > allowed_parfor_by_memory:
             parfor_hw[dim_hw] = allowed_parfor_by_memory
 
-    for d in spatial_mapping_hint.keys():        
+    for d in spatial_mapping_hint.keys():
         for key in parfor_sw.keys():
             if key == spatial_mapping_hint[d]:
                 parfor_sw[key] *= parfor_hw[d]
@@ -110,7 +121,7 @@ def cost_model(
     left_workload_dim_size: dict = copy.deepcopy(workload_dim_sizes)
     for d, item in spatial_mapping_hint.items():
         left_workload_dim_size[item] /= parfor_hw[d]
-    for d, value in left_workload_dim_size.items(): # round up
+    for d, value in left_workload_dim_size.items():  # round up
         left_workload_dim_size[d] = math.ceil(value)
 
     # derive the mapping: temporal
@@ -130,7 +141,9 @@ def cost_model(
     temfor_sw: list = [[key, value] for key, value in left_workload_dim_size.items()]
     temfor_hw: dict = {key: [] for key in mem_sizes_bit.keys()}
 
-    unallocated_loops_sw = copy.deepcopy([v for v in temfor_sw if v[0] in ["I", "J"]])  # exclude T and IT
+    unallocated_loops_sw = copy.deepcopy(
+        [v for v in temfor_sw if v[0] in ["I", "J"]]
+    )  # exclude T and IT
     allocated_loops_total = []
     for mem, size_bit in mem_sizes_bit.items():
         if unallocated_loops_sw == []:
@@ -148,8 +161,8 @@ def cost_model(
             )  # for weight
             mem_sizes_bias_bit_min = (
                 workload["operand_precision"]["H"]
-            * math.prod([value for key, value in parfor_sw.items() if key in ["I"]])
-            * math.prod([value for key, value in allocated_loops_total])
+                * math.prod([value for key, value in parfor_sw.items() if key in ["I"]])
+                * math.prod([value for key, value in allocated_loops_total])
             )  # for bias
             mem_sizes_bit_min = mem_sizes_weight_bit_min + mem_sizes_bias_bit_min
             allowed_loop_size = mem_sizes_bit[mem] / mem_sizes_bit_min
@@ -178,7 +191,7 @@ def cost_model(
     mem_bw_list = [hw_model["memories"][key]["bandwidth"] for key in mem_list]
 
     top_mem_idx = len(mem_list) - 1
-    for mem_idx in range(len(mem_list)-1, -1, -1):
+    for mem_idx in range(len(mem_list) - 1, -1, -1):
         if temfor_hw[mem_list[mem_idx]] == []:
             top_mem_idx = top_mem_idx - 1
         else:
@@ -193,18 +206,25 @@ def cost_model(
     latency_collect_breakdown: dict = {"compute": ideal_latency}
     access_collect: dict = {}
     parfor_size = math.prod([value for key, value in parfor_sw.items()])
-    parfor_size_bias = math.prod([value for key, value in parfor_sw.items() if key in ["I"]])
-    memory_double_buffering: bool = hw_model["operational_array"]["memory_double_buffering"]
-    tmfor_size_total = math.prod(
-        [value for key, value in temfor_sw]
-    )  # consider i
+    parfor_size_bias = math.prod(
+        [value for key, value in parfor_sw.items() if key in ["I"]]
+    )
+    memory_double_buffering: bool = hw_model["operational_array"][
+        "memory_double_buffering"
+    ]
+    tmfor_size_total = math.prod([value for key, value in temfor_sw])  # consider i
     for mem_idx in range(top_mem_idx + 1):
         # tmfor loops below the current mem level
         tmfor_size_lower = math.prod(
             [value for mem in mem_list[:mem_idx] for key, value in temfor_hw[mem]]
         )
         tmfor_size_lower_bias = math.prod(
-            [value for mem in mem_list[:mem_idx] for key, value in temfor_hw[mem] if key in ["I"]]
+            [
+                value
+                for mem in mem_list[:mem_idx]
+                for key, value in temfor_hw[mem]
+                if key in ["I"]
+            ]
         )
         tmfor_size_upper = (
             tmfor_size_total / tmfor_size_lower
@@ -213,10 +233,16 @@ def cost_model(
         # calculate the write latency of tmfor_size_lower: wr_from_high
         if mem_idx == top_mem_idx:
             cycles_wr_per_tile = 0
-        elif mem_list[mem_idx] == "cim_memory" and encoding_scheme == "neighbor":  # compute_memory
+        elif (
+            mem_list[mem_idx] == "cim_memory" and encoding_scheme == "neighbor"
+        ):  # compute_memory
             cycles_wr_per_tile = 2  # 2: sachi stores the spins twice
         else:
-            bit_per_tile = (tmfor_size_lower * parfor_size * bit_per_weight) + (tmfor_size_lower_bias * parfor_size_bias * workload["operand_precision"]["H"])
+            bit_per_tile = (tmfor_size_lower * parfor_size * bit_per_weight) + (
+                tmfor_size_lower_bias
+                * parfor_size_bias
+                * workload["operand_precision"]["H"]
+            )
             cycles_wr_per_tile = bit_per_tile / (mem_bw_list[mem_idx])
             cycles_wr_per_tile = math.ceil(cycles_wr_per_tile)
         cycles_wr_from_high = math.ceil(cycles_wr_per_tile * tmfor_size_upper)
@@ -225,7 +251,11 @@ def cost_model(
         if mem_idx == 0:
             cycles_rd_per_tile = tmfor_size_lower
         else:
-            bit_per_tile = (tmfor_size_lower * parfor_size * bit_per_weight) + (tmfor_size_lower_bias * parfor_size_bias * workload["operand_precision"]["H"])
+            bit_per_tile = (tmfor_size_lower * parfor_size * bit_per_weight) + (
+                tmfor_size_lower_bias
+                * parfor_size_bias
+                * workload["operand_precision"]["H"]
+            )
             cycles_rd_per_tile = bit_per_tile / (mem_bw_list[mem_idx])
             cycles_rd_per_tile = math.ceil(cycles_rd_per_tile)
         cycles_rd_to_low = math.ceil(cycles_rd_per_tile * tmfor_size_upper)
@@ -256,8 +286,10 @@ def cost_model(
             )
         # calculate the access count
         access_collect[mem_list[mem_idx]] = {
-            "wr": (cycles_wr_from_high + cycles_wr_from_low) * mem_repeat_count[mem_list[mem_idx]],
-            "rd": (cycles_rd_to_low + cycles_rd_to_high) * mem_repeat_count[mem_list[mem_idx]],
+            "wr": (cycles_wr_from_high + cycles_wr_from_low)
+            * mem_repeat_count[mem_list[mem_idx]],
+            "rd": (cycles_rd_to_low + cycles_rd_to_high)
+            * mem_repeat_count[mem_list[mem_idx]],
         }
 
     # latency of step two: spin updating
@@ -270,19 +302,31 @@ def cost_model(
             if (
                 mem_idx == 0
             ):  # the data within the compute memory may not be densely stored (spatial utilization on D2 < 1)
-                cycles_rd_spin_updating = latency_collect_breakdown[mem_list[mem_idx]]["rd_to_low"]
+                cycles_rd_spin_updating = latency_collect_breakdown[mem_list[mem_idx]][
+                    "rd_to_low"
+                ]
                 cycles_wr_spin_updating = cycles_rd_spin_updating
             else:
                 num_iterations = workload_dim_sizes["IT"]
                 num_trails = workload_dim_sizes["T"]
-                cycles_rd_spin_updating = math.ceil(data_size_bit / mem_bw_list[mem_idx]) * num_iterations * num_trails
-                cycles_wr_spin_updating = math.ceil(data_size_bit / mem_bw_list[mem_idx]) * num_iterations * num_trails
+                cycles_rd_spin_updating = (
+                    math.ceil(data_size_bit / mem_bw_list[mem_idx])
+                    * num_iterations
+                    * num_trails
+                )
+                cycles_wr_spin_updating = (
+                    math.ceil(data_size_bit / mem_bw_list[mem_idx])
+                    * num_iterations
+                    * num_trails
+                )
             access_spin_updating: dict = {
                 "wr": cycles_wr_spin_updating,
                 "rd": cycles_rd_spin_updating,
             }
             if memory_double_buffering and mem_idx != 0:
-                cycles_spin_updating = max(cycles_rd_spin_updating, cycles_wr_spin_updating)
+                cycles_spin_updating = max(
+                    cycles_rd_spin_updating, cycles_wr_spin_updating
+                )
             else:
                 cycles_spin_updating = cycles_rd_spin_updating + cycles_wr_spin_updating
     else:
@@ -292,22 +336,44 @@ def cost_model(
     # note: this on-loading latency is zero if the top memory is dram
     bias_bit_total = workload["operand_precision"]["H"] * workload_dim_sizes["I"]
     if encoding_scheme == "full-matrix":
-        weight_bit_total = workload["operand_precision"]["W"] * workload_dim_sizes["I"] * workload_dim_sizes["J"]
+        weight_bit_total = (
+            workload["operand_precision"]["W"]
+            * workload_dim_sizes["I"]
+            * workload_dim_sizes["J"]
+        )
     elif encoding_scheme == "triangular":
-        weight_bit_total = (workload["operand_precision"]["W"] // 2) * workload_dim_sizes["I"] * workload_dim_sizes["J"]
+        weight_bit_total = (
+            (workload["operand_precision"]["W"] // 2)
+            * workload_dim_sizes["I"]
+            * workload_dim_sizes["J"]
+        )
     elif encoding_scheme == "coordinate":
-        weight_bit_total = (workload["operand_precision"]["W"] + math.log2(workload_dim_sizes["J"])) * workload_dim_sizes["I"] * workload_dim_sizes["J"]
+        weight_bit_total = (
+            (workload["operand_precision"]["W"] + math.log2(workload_dim_sizes["J"]))
+            * workload_dim_sizes["I"]
+            * workload_dim_sizes["J"]
+        )
     elif encoding_scheme == "neighbor":
-        weight_bit_total = workload["operand_precision"]["W"] * workload_dim_sizes["I"] * workload_dim_sizes["J"]
+        weight_bit_total = (
+            workload["operand_precision"]["W"]
+            * workload_dim_sizes["I"]
+            * workload_dim_sizes["J"]
+        )
     else:
         raise ValueError(f"Unsupported encoding scheme: {encoding_scheme}")
     if encoding_scheme == "neighbor":
-        spin_bit_total = workload["operand_precision"]["I"] * workload_dim_sizes["I"] * workload_dim_sizes["J"]
+        spin_bit_total = (
+            workload["operand_precision"]["I"]
+            * workload_dim_sizes["I"]
+            * workload_dim_sizes["J"]
+        )
     else:
         spin_bit_total = workload["operand_precision"]["I"] * workload_dim_sizes["I"]
     if workload["problem_specific_weight"] is False:
-        weight_bit_total = 0 # weights are the same for different problems, so no on-loading
-    onloading_bit_total = (bias_bit_total + weight_bit_total + spin_bit_total)
+        weight_bit_total = (
+            0  # weights are the same for different problems, so no on-loading
+        )
+    onloading_bit_total = bias_bit_total + weight_bit_total + spin_bit_total
     onloading_latency_collect: dict = {}
     for mem_idx in range(top_mem_idx, len(mem_list)):
         if mem_idx != top_mem_idx:
@@ -316,7 +382,9 @@ def cost_model(
             cycles_onloading_rd = 0
         if mem_idx == len(mem_list) - 1:
             cycles_onloading_wr = 0
-        elif mem_list[mem_idx] == "cim_memory" and encoding_scheme == "neighbor":  # compute_memory
+        elif (
+            mem_list[mem_idx] == "cim_memory" and encoding_scheme == "neighbor"
+        ):  # compute_memory
             cycles_onloading_wr = temfor_hw[mem_list[mem_idx]][0][1]
         else:
             cycles_onloading_wr = math.ceil(onloading_bit_total / mem_bw_list[mem_idx])
@@ -324,24 +392,44 @@ def cost_model(
             "rd": cycles_onloading_rd,
             "wr": cycles_onloading_wr,
         }
-    onloading_latency = max([value for spec in onloading_latency_collect.values() for key, value in spec.items()])
+    onloading_latency = max(
+        [
+            value
+            for spec in onloading_latency_collect.values()
+            for key, value in spec.items()
+        ]
+    )
     # calculate the total latency
-    latency_system = max(list(latency_collect.values())) + cycles_spin_updating + onloading_latency
+    latency_system = (
+        max(list(latency_collect.values())) + cycles_spin_updating + onloading_latency
+    )
     latency_system_breakdown = {
         "computation": latency_collect["compute"],
         "spin_updating": cycles_spin_updating,
         "on_loading": onloading_latency,
     }
     if max(list(latency_collect.values())) != latency_collect["compute"]:
-        latency_system_breakdown["memory"] = max(list(latency_collect.values())) - latency_collect["compute"]
+        latency_system_breakdown["memory"] = (
+            max(list(latency_collect.values())) - latency_collect["compute"]
+        )
 
     # calculate the energy of step one: computation
-    mac_energy = hw_model["operational_array"]["mac_energy"] * parfor_size * ideal_latency
+    mac_energy = (
+        hw_model["operational_array"]["mac_energy"] * parfor_size * ideal_latency
+    )
     if workload.get("with_bias", False):
-        add_energy = hw_model["operational_array"]["add_energy"] * parfor_size_bias * ideal_latency
+        add_energy = (
+            hw_model["operational_array"]["add_energy"]
+            * parfor_size_bias
+            * ideal_latency
+        )
     else:
         add_energy = 0
-    compare_energy = hw_model["operational_array"]["compare_energy"] * parfor_size_bias * ideal_latency
+    compare_energy = (
+        hw_model["operational_array"]["compare_energy"]
+        * parfor_size_bias
+        * ideal_latency
+    )
     energy_compute_total = mac_energy + add_energy + compare_energy
     energy_collect: dict = {
         "mac": mac_energy,
@@ -387,15 +475,26 @@ def cost_model(
     for mem_idx in range(top_mem_idx, len(mem_list)):
         mem_energy_per_wr = hw_model["memories"][mem_list[mem_idx]]["w_cost"]
         mem_energy_per_rd = hw_model["memories"][mem_list[mem_idx]]["r_cost"]
-        mem_energy_wr = mem_energy_per_wr * onloading_latency_collect[mem_list[mem_idx]]["wr"]
-        mem_energy_rd = mem_energy_per_rd * onloading_latency_collect[mem_list[mem_idx]]["rd"]
+        mem_energy_wr = (
+            mem_energy_per_wr * onloading_latency_collect[mem_list[mem_idx]]["wr"]
+        )
+        mem_energy_rd = (
+            mem_energy_per_rd * onloading_latency_collect[mem_list[mem_idx]]["rd"]
+        )
         onloading_energy_collect[mem_list[mem_idx]] = {
             "wr": mem_energy_wr,
             "rd": mem_energy_rd,
         }
         energy_collect["onloading"] = onloading_energy_collect
-    onloading_energy_total = sum([v["wr"] + v["rd"] for v in onloading_energy_collect.values()])
-    energy_system = energy_compute_total + mem_energy_total + spin_updating_energy_total + onloading_energy_total
+    onloading_energy_total = sum(
+        [v["wr"] + v["rd"] for v in onloading_energy_collect.values()]
+    )
+    energy_system = (
+        energy_compute_total
+        + mem_energy_total
+        + spin_updating_energy_total
+        + onloading_energy_total
+    )
     energy_system_breakdown = {
         "computation": energy_compute_total,
         "memory": mem_energy_total,
@@ -407,17 +506,31 @@ def cost_model(
     time_to_solution = latency_system * hw_model["operational_array"]["tclk"]  # ns
     time_to_solution_macro = ideal_latency * hw_model["operational_array"]["tclk"]  # ns
     energy_to_solution = energy_system  # pJ
-    num_op = workload["num_trails"] * workload["num_iterations"] * np.prod(workload["loop_sizes"]) * 2  # consider add and mac
+    num_op = (
+        workload["num_trails"]
+        * workload["num_iterations"]
+        * np.prod(workload["loop_sizes"])
+        * 2
+    )  # consider add and mac
     tops = num_op / time_to_solution / 1e3  # tera operations per second
     topsw = num_op / energy_to_solution  # operations per joule
     topsmm2 = tops / total_area  # tera operations per second per mm^2
-    topsw_macro = num_op / energy_system_breakdown["computation"]  # operations per joule for mac
-    tops_macro = num_op / time_to_solution_macro / 1e3  # tera operations per second for mac
-    topsmm2_macro = tops / (area_collect["mac"] + area_collect["add"] + area_collect["compare"])
+    topsw_macro = (
+        num_op / energy_system_breakdown["computation"]
+    )  # operations per joule for mac
+    tops_macro = (
+        num_op / time_to_solution_macro / 1e3
+    )  # tera operations per second for mac
+    topsmm2_macro = tops / (
+        area_collect["mac"] + area_collect["add"] + area_collect["compare"]
+    )
 
     latency_collect["spin_updating"] = cycles_spin_updating
     latency_collect["on_loading"] = onloading_latency
-    req_sram_size = bit_per_weight * workload_dim_sizes["I"] * workload_dim_sizes["J"] + workload["operand_precision"]["H"] * workload_dim_sizes["I"]
+    req_sram_size = (
+        bit_per_weight * workload_dim_sizes["I"] * workload_dim_sizes["J"]
+        + workload["operand_precision"]["H"] * workload_dim_sizes["I"]
+    )
 
     # interpret breakdown for plotting
     latency_system_breakdown_plot = {
@@ -434,20 +547,24 @@ def cost_model(
         latency_system_breakdown_plot["sram"] = latency_system_breakdown["memory"]
         latency_system_breakdown_plot["dram"] = latency_system_breakdown["on_loading"]
     if "dram" in energy_collect.keys():
-        energy_dram_wo_onloading = np.sum([value for value in energy_collect["dram"].values()])
+        energy_dram_wo_onloading = np.sum(
+            [value for value in energy_collect["dram"].values()]
+        )
     else:
         energy_dram_wo_onloading = 0
     energy_system_breakdown_plot = {
         "mac": energy_system_breakdown["computation"],
-        "spin_updating": energy_system_breakdown["spin_updating"], # L1 SRAM (just labeled as spin_updating here)
-        "sram": energy_system_breakdown["memory"] - energy_dram_wo_onloading, # L2 SRAM
+        "spin_updating": energy_system_breakdown[
+            "spin_updating"
+        ],  # L1 SRAM (just labeled as spin_updating here)
+        "sram": energy_system_breakdown["memory"] - energy_dram_wo_onloading,  # L2 SRAM
         "dram": energy_dram_wo_onloading + energy_system_breakdown["on_loading"],
     }
     area_breakdown_plot = {
         "mac": area_collect["mac"] + area_collect["add"] + area_collect["compare"],
         "spin_updating": area_collect["cim_memory"],
         "sram": area_collect["sram_160KB"],
-    } # h reg and output reg are not included when plotting due to small area
+    }  # h reg and output reg are not included when plotting due to small area
 
     cme = {
         "req_sram_size_bit": req_sram_size,

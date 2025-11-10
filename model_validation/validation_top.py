@@ -1,6 +1,6 @@
 import logging
-import matplotlib.pyplot as plt
 import os
+from pathlib import Path
 from api import plot_results_in_bar_chart_with_breakdown
 from sachi import validation_to_sachi
 from prim_caefa import validation_to_prim_caefa
@@ -19,8 +19,7 @@ if __name__ == "__main__":
 
     validation_list = ["sachi", "fpga_asb_v2", "fpga_asb_v1", "prim_caefa"]
 
-    if os.path.exists("outputs") is False:
-        os.makedirs("outputs")
+    Path("outputs").mkdir(parents=True, exist_ok=True)
 
     for validation in validation_list:
         if validation == "sachi":

@@ -1,5 +1,5 @@
 import logging
-import os
+from pathlib import Path
 from api import plot_results_in_bar_chart_with_breakdown
 
 
@@ -151,8 +151,7 @@ if __name__ == "__main__":
         "%(asctime)s - %(funcName)s +%(lineno)s - %(levelname)s - %(message)s"
     )
     logging.basicConfig(level=logging_level, format=logging_format)
-    if os.path.exists("output") is False:
-        os.makedirs("output")
+    Path("./outputs").mkdir(parents=True, exist_ok=True)
     plot_results_in_bar_chart_with_breakdown(
         validation_to_sachi(),
         output_file="outputs/sachi_breakdown.png",

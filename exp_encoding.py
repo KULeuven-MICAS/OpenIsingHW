@@ -450,7 +450,7 @@ if __name__ == "__main__":
     topsmm2_in_list = [[], [], []]
     latency_mismatch_in_list = [[], [], []]
     energy_mismatch_in_list = [[], [], []]
-    title = f"encoding_comparison"
+    title = "encoding_comparison"
     pbar = tqdm.tqdm(total=len(pb_pool) * len(label_in_list))
     for pb_spec in pb_pool:
         for encoding_idx in range(len(label_in_list)):
@@ -500,7 +500,8 @@ if __name__ == "__main__":
                 mem_size_in_byte=hw_model["memories"]["cim_memory"]["size"] / 8,
                 bw=hw_model["memories"]["cim_memory"]["bandwidth"],
             )
-            # linearly scale the mac/add/compare energy according to weight precision, linearly is because it is 1-bit*n-bit a mac logic
+            # linearly scale the mac/add/compare energy according to weight precision
+            # linearly is because it is 1-bit*n-bit a mac logic
             hw_model["operational_array"]["mac_energy"] = (
                 hw_model["operational_array"]["mac_energy"]
                 / 8

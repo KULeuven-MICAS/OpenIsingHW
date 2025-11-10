@@ -580,7 +580,8 @@ if __name__ == "__main__":
             )
             hw_model["operational_array"]["encoding"] = encoding
             hw_model["operational_array"]["sizes"] = [1, d2, num_macros]
-            # linearly scale the mac/add/compare energy according to weight precision, linearly is because it is 1-bit*n-bit a mac logic
+            # linearly scale the mac/add/compare energy according to weight precision
+            # linearly is because it is 1-bit*n-bit a mac logic
             hw_model["operational_array"]["mac_energy"] = (
                 hw_model["operational_array"]["mac_energy"]
                 / 8

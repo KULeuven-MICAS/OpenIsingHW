@@ -34,7 +34,7 @@ jobs:
           fi 
 
       - name: Run Ruff Check
-        run: ruff check . --exclude cacti/ get_cacti_cost.py
+        run: ruff check . --exclude "cacti/,get_cacti_cost.py"
         
 
 

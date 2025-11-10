@@ -1,5 +1,3 @@
-import os.path
-import sys
 import logging
 import numpy as np
 import math
@@ -25,10 +23,11 @@ def validation_to_prim_caefa():
     SM_power_per_degree_per_bit = (
         0.6110 / 4 * 1e-6
     )  # W/bit@40nm, Vdd=1.1V extracted from the paper
-    SRAM_width = 1024
+    # SRAM_width = 1024
     # Benchmark settings
     benchmark_dict = {
-        # latency [cycle]: reported latency per iteration, energy [nJ]: reported energy per iteration, latency_model [cycle]: latency to be modeled, energy_model [nJ]: energy to be modeled
+        # latency [cycle]: reported latency per iteration, energy [nJ]: reported energy per iteration
+        # latency_model [cycle]: latency to be modeled, energy_model [nJ]: energy to be modeled
         # num_js is not halved as PRIM-CAEFA stores J twice
         # w_pres is the precision of the problem, packet_pres is the precision used in the corresponding packet
         "G22_2K_IM": {
@@ -130,18 +129,18 @@ def validation_to_prim_caefa():
     t_clk = 40  # ns
 
     # calculating the performance metrics
-    for benchmark in benchmark_dict.keys():
-        num_spins = benchmark_dict[benchmark]["num_spins"]
-        num_js = benchmark_dict[benchmark]["num_js"]
-        num_iterations = benchmark_dict[benchmark]["num_iterations"]
-        w_pres = benchmark_dict[benchmark]["w_pres"]
-        packet_pres = benchmark_dict[benchmark]["packet_pres"]
-        max_degree = benchmark_dict[benchmark]["max_degree"]
-        energy = benchmark_dict[benchmark]["energy"]
-        latency = benchmark_dict[benchmark]["latency"]
+    for benchmark, bench in benchmark_dict.items():
+        num_spins = bench["num_spins"]
+        num_js = bench["num_js"]
+        num_iterations = bench["num_iterations"]
+        # w_pres = bench["w_pres"]
+        packet_pres = bench["packet_pres"]
+        # max_degree = bench["max_degree"]
+        energy = bench["energy"]
+        latency = bench["latency"]
 
         # get the info of testbench
-        data = np.loadtxt(benchmark_dict[benchmark]["file_path"])
+        data = np.loadtxt(bench["file_path"])
         num_spins = int(data[0][0])
         num_spins_bw = np.ceil(np.log2(num_spins))
         num_js = int(data[0][1] * 2)
@@ -301,11 +300,14 @@ def validation_to_prim_caefa():
         latency_model = sum(latency_collect.values())
         energy_model = power_model * latency_model * t_clk
         logging.info(
-            f"Benchmark: {benchmark}, Latency (model): {latency_model} cycles, Latency (reported): {latency} cycles, Energy (model): {energy_model} nJ, Energy (reported): {energy} nJ"
+            f"Benchmark: {benchmark}, Latency (model): {latency_model} cycles, Latency (reported): {latency} cycles"
         )
-        benchmark_dict[benchmark]["energy_model"] = energy_model
-        benchmark_dict[benchmark]["latency_model"] = latency_model
-        benchmark_dict[benchmark]["latency_breakdown"] = latency_collect
+        logging.info(
+            f"Energy (model): {energy_model} nJ, Energy (reported): {energy} nJ"
+        )
+        bench["energy_model"] = energy_model
+        bench["latency_model"] = latency_model
+        bench["latency_breakdown"] = latency_collect
     return benchmark_dict
 
 

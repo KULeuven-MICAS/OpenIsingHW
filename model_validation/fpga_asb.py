@@ -1,5 +1,5 @@
 import logging
-from api import plot_results_in_bar_chart, plot_results_in_bar_chart_with_breakdown
+from api import plot_results_in_bar_chart_with_breakdown
 
 
 def validation_to_fpga_asb():
