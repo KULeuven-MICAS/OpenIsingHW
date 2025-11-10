@@ -1,8 +1,6 @@
-import logging
 import copy
 import math
 import numpy as np
-import yaml
 
 def cost_model(
         hw_model: dict,
