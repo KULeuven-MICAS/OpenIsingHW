@@ -17,7 +17,7 @@ def plot_perf_ratio_in_curve(
     benchmark_name_in_list: list,
     title: str | None = None,
     log_scale: bool = True,
-    ):
+    ) -> None:
     """
     plot the performance ratio in curve
     :param latency_mismatch_in_list: latency mismatch [%] in list, each element is a list
@@ -122,12 +122,14 @@ def plot_results_breakdown_in_bar_chart(
     component_tag_list: list = [],
     cycles_in_list: list = [],
     energy_in_list: list = [],
+    area_in_list: list = [],
     log_scale: bool = True,
     topsmm2_in_list: list = [],
     topsw_in_list: list = [],
     disable_right_axis: bool = False,
     showing_legend: bool = True,
-    ):
+    showing_annotation: bool = False,
+    ) -> None:
     """
     plot the results breakdown in bar chart
     :param cycles_breakdown_in_list: cycles [ns] in list, each element is a list
@@ -138,13 +140,15 @@ def plot_results_breakdown_in_bar_chart(
     :param title: figure title
     :param component_list: list of components for breakdown
     :param component_tag_list: list of component tags for breakdown
-    :param cycles_in_list: total cycles [ns] in list, each element is a list [not used here]
-    :param energy_in_list: total energy [pJ] in list, each element is a list [not used here]
+    :param cycles_in_list: total cycles [ns] in list, each element is a list
+    :param energy_in_list: total energy [pJ] in list, each element is a list
+    :param area_in_list: total area [mm2] in list, each element is a list
     :param log_scale: whether to use log scale for y axis
     :param topsmm2_in_list: list of TOPS (MM2) for each data
     :param topsw_in_list: list of TOPS (W) for each data
     :param disable_right_axis: whether to disable the right y axis
     :param showing_legend: whether to show the legend
+    :param showing_annotation: whether to show the text annotation on top of each bar
     """
     colors = {
         "mac": '#45B7D1',  # MAC (MACs)
@@ -156,7 +160,7 @@ def plot_results_breakdown_in_bar_chart(
     }
     hatchs = ["x", "//", "oo", "++", "**", "||", "..", "\\\\"]
     # plotting the results
-    fig, ax = plt.subplots(1, 3, figsize=(15, 5))
+    fig, ax = plt.subplots(1, 3, figsize=(20, 4))
 
     x = list(range(len(cycles_breakdown_in_list[0])))
     width = 0.125
@@ -203,20 +207,41 @@ def plot_results_breakdown_in_bar_chart(
             )
             base += breakdown
 
-    # area_x = list(range(len(label_in_list)))
-    # base = np.zeros(len(label_in_list))
-    # for idx in range(len(component_list)):
-    #     component = component_list[idx]
-    #     if component == "dram":
-    #         continue  # skip DRAM for area breakdown
-    #     try:
-    #         breakdown = [case[0][component] for case in area_breakdown_in_list]
-    #     except KeyError:
-    #         breakpoint()
-    #     ax[2].bar(
-    #             area_x, breakdown, bottom=base, width=0.5, color=colors[component], edgecolor="black", label=component_tag_list[component_idx]
-    #         )
-    #     base += breakdown
+    if showing_annotation:
+        # annotate the cycles, energy, area values on top of each bar
+        for idx in range(len(cycles_in_list)):
+            for i in range(len(cycles_in_list[idx])):
+                ax[0].annotate(
+                    f"{cycles_in_list[idx][i]:.1e}",
+                    (i + width * idx, cycles_in_list[idx][i]),
+                    textcoords="offset points",
+                    xytext=(0, 5),
+                    ha="center",
+                    fontsize=12,
+                    color="black"
+                )
+        for idx in range(len(energy_in_list)):
+            for i in range(len(energy_in_list[idx])):
+                ax[1].annotate(
+                    f"{energy_in_list[idx][i]:.1e}",
+                    (i + width * idx, energy_in_list[idx][i]),
+                    textcoords="offset points",
+                    xytext=(0, 5),
+                    ha="center",
+                    fontsize=12,
+                    color="black"
+                )
+        for idx in range(len(area_in_list)):
+            for i in range(len(area_in_list[idx])):
+                ax[2].annotate(
+                    f"{area_in_list[idx][i]:.1f}",
+                    (i + width * idx, area_in_list[idx][i]),
+                    textcoords="offset points",
+                    xytext=(0, 5),
+                    ha="center",
+                    fontsize=12,
+                    color="black"
+                )
 
     if not disable_right_axis:
         # plot the topsmm2 and topsw on the right y axis
@@ -353,13 +378,13 @@ def plot_results_breakdown_in_bar_chart(
 
     # set the y range
     # ax[0].set_ylim(1e3, 1e11)
-    ax[1].set_ylim(1e4, 1e12)
+    ax[1].set_ylim(1e3, 1e12)
     ax[2].set_ylim(0, 12)
 
     # rotate the x ticklabels
-    plt.setp(ax[0].get_xticklabels(), rotation=45, ha="right", rotation_mode="anchor")
-    plt.setp(ax[1].get_xticklabels(), rotation=45, ha="right", rotation_mode="anchor")
-    plt.setp(ax[2].get_xticklabels(), rotation=45, ha="right", rotation_mode="anchor")
+    # plt.setp(ax[0].get_xticklabels(), rotation=45, ha="right", rotation_mode="anchor")
+    # plt.setp(ax[1].get_xticklabels(), rotation=45, ha="right", rotation_mode="anchor")
+    # plt.setp(ax[2].get_xticklabels(), rotation=45, ha="right", rotation_mode="anchor")
 
     # add grid and put grid below axis
     ax[0].grid(which="both")
@@ -396,7 +421,6 @@ if __name__ == "__main__":
     ]
     benchmark_name_in_list = [f"{pb_spec[0]}" for pb_spec in pb_pool]
     d2_in_list = [1, 8, 32, 64, 100, 256, 512]
-    # d2_in_list = [100, 256]
     
     # general settings
     sram_size_in_KB = 160
@@ -408,6 +432,7 @@ if __name__ == "__main__":
 
     cycles_in_list = [[] for _ in range(len(d2_in_list))]
     energy_in_list = [[] for _ in range(len(d2_in_list))]
+    area_in_list = [[] for _ in range(len(d2_in_list))]
     cycle_breakdown_in_list = [[] for _ in range(len(d2_in_list))]
     energy_breakdown_in_list = [[] for _ in range(len(d2_in_list))]
     area_breakdown_in_list = [[] for _ in range(len(d2_in_list))]
@@ -472,6 +497,7 @@ if __name__ == "__main__":
             energy_to_solution = cme["energy_to_solution"]
             cycles_in_list[d2_idx].append(cycles_to_solution)
             energy_in_list[d2_idx].append(energy_to_solution)
+            area_in_list[d2_idx].append(cme["total_area_mm2"])
             cycle_breakdown_in_list[d2_idx].append(cme["latency_breakdown_plot"])
             energy_breakdown_in_list[d2_idx].append(cme["energy_breakdown_plot"])
             area_breakdown_in_list[d2_idx].append(cme["area_breakdown_plot"])
@@ -501,11 +527,13 @@ if __name__ == "__main__":
         component_list=component_list,
         component_tag_list=component_tag_list,
         topsmm2_in_list=topsmm2_in_list,
+        area_in_list=area_in_list,
         area_breakdown_in_list=area_breakdown_in_list,
         topsw_in_list=topsw_in_list,
         log_scale=True,
         disable_right_axis=True,
         showing_legend=False,
+        showing_annotation=False,
     )
     plot_perf_ratio_in_curve(
         latency_mismatch_in_list=topsmm2_in_list,
