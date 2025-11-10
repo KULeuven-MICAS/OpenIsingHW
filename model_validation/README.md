@@ -43,6 +43,7 @@ Here we list all the validated workloads for each work. Note that:
 | G39_2K_BM | Random sparse | 2,000 | 11.778 | 2b | N | BM | 0 | NA |
 | G39_2K_SM | Random sparse | 2,000 | 11.778 | 2b | N | SM | 0 | NA |
 | K2000_2K_IM | Dense | 2,000 | 1,999 | 2b | N | IM | 0 | NA |
+| Average | | | | | | | 0 | NA |
 
 ### SB-V1
 
@@ -50,6 +51,7 @@ Here we list all the validated workloads for each work. Note that:
 |:-|:-|:-|:-|:-|:-|:-|:-|
 | K2000 | Dense | 2,048 | 2,047 | 1b | N | 0 | NA |
 | K4000 | Dense | 4,096 | 4,095 | 1b | N | 0 | NA |
+| Average | | | | | | 0 | NA |
 
 ### SB-V2
 
@@ -65,3 +67,4 @@ Here we list all the validated workloads for each work. Note that:
 | K16000_C4 | Dense | 16,384 | 16,383 | 1b | N | 4 | 0 | NA |
 | K32000_C8 | Dense | 32,768 | 32,767 | 1b | N | 8 | 0 | NA |
 | K16000_C2 | Dense | 16,384 | 16,383 | 1b | N | 2 | 0 | NA |
+| Average | | | | | | | 0 | NA |
