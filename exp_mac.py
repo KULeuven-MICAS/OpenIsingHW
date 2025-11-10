@@ -518,7 +518,7 @@ if __name__ == "__main__":
     latency_mismatch_in_list = [[] for _ in range(len(d2_in_list))]
     energy_mismatch_in_list = [[] for _ in range(len(d2_in_list))]
     title = f"MAC_experiment_{encoding}_encoding"
-    pbar = tqdm.tqdm(total=len(pb_pool) * len(d2_in_list))
+    pbar = tqdm.tqdm(total=len(pb_pool) * len(d2_in_list), ascii="░▒█")
     for pb_spec in pb_pool:
         for d2_idx in range(len(d2_in_list)):
             d2 = d2_in_list[d2_idx]

@@ -451,7 +451,7 @@ if __name__ == "__main__":
     latency_mismatch_in_list = [[], [], []]
     energy_mismatch_in_list = [[], [], []]
     title = "encoding_comparison"
-    pbar = tqdm.tqdm(total=len(pb_pool) * len(label_in_list))
+    pbar = tqdm.tqdm(total=len(pb_pool) * len(label_in_list), ascii="░▒█")
     for pb_spec in pb_pool:
         for encoding_idx in range(len(label_in_list)):
             encoding = label_in_list[encoding_idx]
