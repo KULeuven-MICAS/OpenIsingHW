@@ -13,22 +13,22 @@ from get_cacti_cost import get_cacti_cost
 def plot_perf_ratio_in_curve(
     latency_mismatch_in_list: list,
     energy_mismatch_in_list: list,
-    targeted_annotation_idx: int,
     benchmark_name_in_list: list,
     title: str | None = None,
     log_scale: bool = True,
-    ):
+    showing_annotation: bool = False,
+    ) -> None:
     """
     plot the performance ratio in curve
     :param latency_mismatch_in_list: latency mismatch [%] in list, each element is a list
     :param energy_mismatch_in_list: energy mismatch [%] in list, each element is a list
-    :param targeted_annotation_idx: only annotate the data at this index
     :param benchmark_name_in_list: label for each data
     :param title: figure title
     :param log_scale: whether to use log scale for y axis
+    :param showing_annotation: whether to show the annotation
     """
     # plotting the results
-    fig, ax = plt.subplots(1, 2, figsize=(15, 3))
+    fig, ax = plt.subplots(1, 2, figsize=(20, 3))
 
     x = list(range(len(latency_mismatch_in_list[0])))
     markers = ["o", "s", "D", "^", "v", "<", ">", "p"]
@@ -51,7 +51,7 @@ def plot_perf_ratio_in_curve(
             markeredgecolor="white",
             markeredgewidth=1.5,
         )
-        if idx == targeted_annotation_idx:
+        if showing_annotation:
             # add annotation for each point
             for i in range(len(x)):
                 ax[0].annotate(
@@ -116,6 +116,8 @@ def plot_results_breakdown_in_bar_chart(
     label_in_list: list,
     benchmark_name_in_list: list,
     energy_breakdown_in_list: list,
+    cycles_in_list: list = [],
+    energy_in_list: list = [],
     title: str | None = None,
     component_list: list = [],
     component_tag_list: list = [],
@@ -124,13 +126,16 @@ def plot_results_breakdown_in_bar_chart(
     topsw_in_list: list = [],
     disable_right_axis: bool = False,
     showing_legend: bool = True,
-    ):
+    showing_annotation: bool = True,
+    ) -> None:
     """
     plot the results breakdown in bar chart
     :param cycles_breakdown_in_list: cycles [ns] in list, each element is a list
     :param label_in_list: label for each data
     :param benchmark_name_in_list: benchmark name shown on x axis
     :param energy_breakdown_in_list: energy [pJ] in list, each element is a list
+    :param cycles_in_list: total cycles [ns] in list, each element is a list
+    :param energy_in_list: total energy [pJ] in list, each element is a list
     :param title: figure title
     :param component_list: list of components for breakdown
     :param component_tag_list: list of component tags for breakdown
@@ -139,6 +144,7 @@ def plot_results_breakdown_in_bar_chart(
     :param topsw_in_list: list of TOPS (W) for each data
     :param disable_right_axis: whether to disable the right y axis
     :param showing_legend: whether to show the legend
+    :param showing_annotation: whether to show the annotation
     """
     colors = {
         "mac": '#45B7D1',  # MAC (MACs)
@@ -150,7 +156,7 @@ def plot_results_breakdown_in_bar_chart(
     }
     hatchs = ["x", "//", "oo", "++", "**", "||", "..", "\\\\"]
     # plotting the results
-    fig, ax = plt.subplots(1, 2, figsize=(15, 5))
+    fig, ax = plt.subplots(1, 2, figsize=(20, 4))
 
     x = list(range(len(cycles_breakdown_in_list[0])))
     width = 0.25
@@ -182,6 +188,30 @@ def plot_results_breakdown_in_bar_chart(
                 [i + width * idx for i in x], breakdown, bottom=base, width=width, color=colors[component], edgecolor="black", hatch=hatchs[idx]
             )
             base += breakdown
+
+    if showing_annotation:
+        for idx in range(len(cycles_in_list)):
+            for i in range(len(cycles_in_list[idx])):
+                ax[0].annotate(
+                    f"{cycles_in_list[idx][i]:.2e}",
+                    (i + width * idx, cycles_in_list[idx][i]),
+                    textcoords="offset points",
+                    xytext=(0, 5),
+                    ha="center",
+                    fontsize=12,
+                    color="black"
+                )
+        for idx in range(len(energy_in_list)):
+            for i in range(len(energy_in_list[idx])):
+                ax[1].annotate(
+                    f"{energy_in_list[idx][i]:.2e}",
+                    (i + width * idx, energy_in_list[idx][i]),
+                    textcoords="offset points",
+                    xytext=(0, 5),
+                    ha="center",
+                    fontsize=12,
+                    color="black"
+                )
 
     if not disable_right_axis:
         # plot the topsmm2 and topsw on the right y axis
@@ -424,6 +454,8 @@ if __name__ == "__main__":
     plot_results_breakdown_in_bar_chart(
         cycles_breakdown_in_list=cycle_breakdown_in_list,
         energy_breakdown_in_list=energy_breakdown_in_list,
+        cycles_in_list=cycles_in_list,
+        energy_in_list=energy_in_list,
         label_in_list=label_in_list,
         benchmark_name_in_list=benchmark_name_in_list,
         title=f"{title}",
@@ -434,13 +466,14 @@ if __name__ == "__main__":
         log_scale=True,
         disable_right_axis=True,
         showing_legend=False,
+        showing_annotation=False,
     )
     plot_perf_ratio_in_curve(
         latency_mismatch_in_list=latency_mismatch_in_list,
         energy_mismatch_in_list=energy_mismatch_in_list,
-        targeted_annotation_idx=1, # only annotate neighbor encoding
         benchmark_name_in_list=benchmark_name_in_list,
         title=f"{title}",
         log_scale=False,
+        showing_annotation=False,
     )
 
