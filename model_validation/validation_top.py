@@ -1,5 +1,4 @@
 import logging
-import os
 from pathlib import Path
 from api import plot_results_in_bar_chart_with_breakdown
 from sachi import validation_to_sachi
