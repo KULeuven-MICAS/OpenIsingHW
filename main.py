@@ -1,3 +1,4 @@
+import argparse
 import logging
 import sys
 from ising.simulator import cost_model
@@ -5,6 +6,23 @@ import yaml
 from pathlib import Path
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        description="OpenIsingHW - System-level simulation framework for Ising accelerators"
+    )
+    parser.add_argument("--hello", action="store_true", help="Display a welcome message")
+    args = parser.parse_args()
+
+    if args.hello:
+        print("Hello, World!")
+        print(
+            "Welcome to OpenIsingHW - An analytical system-level simulation framework "
+            "for digital Ising accelerators."
+        )
+        print("This framework analyzes system-level performance (energy, latency, area) for Ising accelerators.")
+        print("\nTo run a simulation, execute: python main.py")
+        print("For more information, see: README.md")
+        sys.exit(0)
+
     logging_level = logging.INFO
     logging_format = "%(asctime)s - %(filename)s - %(funcName)s +%(lineno)s - %(levelname)s - %(message)s"
     logging.basicConfig(level=logging_level, format=logging_format, stream=sys.stdout)
