@@ -54,7 +54,9 @@ def validation_to_fpga_asb():
         latency = info["latency"]
         # calculating the latency
         num_phases = num_spins / (num_pe_rows * num_cores)
-        latency_compute = num_spins / num_pe_cols + num_phases * max(num_spins / num_pe_cols, num_pe_rows)
+        latency_compute = num_spins / num_pe_cols + num_phases * max(
+            num_spins / num_pe_cols, num_pe_rows
+        )
         latency_model = latency_compute + global_mem_access_latency
         # calculating the energy
         energy_model = nj_per_pe * j_matrix_size  # nJ
@@ -64,7 +66,10 @@ def validation_to_fpga_asb():
         )
         benchmark_dict[benchmark]["energy_model"] = energy_model
         benchmark_dict[benchmark]["latency_model"] = latency_model
-        benchmark_dict[benchmark]["latency_breakdown"] = {"sram": global_mem_access_latency, "spin update": latency_compute}
+        benchmark_dict[benchmark]["latency_breakdown"] = {
+            "sram": global_mem_access_latency,
+            "spin update": latency_compute,
+        }
     return benchmark_dict
 
 
@@ -82,5 +87,5 @@ if __name__ == "__main__":
         output_file="outputs/fpga_asb.png",
         text_type="absolute",
         with_latency_breakdown=True,
-        latency_normalize=False
+        latency_normalize=False,
     )

@@ -242,7 +242,10 @@ def validation_to_fpga_asb_v2():
         )
         benchmark_dict[benchmark]["energy_model"] = energy_model
         benchmark_dict[benchmark]["latency_model"] = latency_model
-        benchmark_dict[benchmark]["latency_breakdown"] = {"sram": latency_weight_comm, "spin update": latency_comp}
+        benchmark_dict[benchmark]["latency_breakdown"] = {
+            "sram": latency_weight_comm,
+            "spin update": latency_comp,
+        }
     return benchmark_dict
 
     pass
@@ -262,5 +265,5 @@ if __name__ == "__main__":
         output_file="outputs/fpga_asb_v2.png",
         text_type="absolute",
         with_latency_breakdown=True,
-        latency_normalize=False
+        latency_normalize=False,
     )

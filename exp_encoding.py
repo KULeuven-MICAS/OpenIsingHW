@@ -1,5 +1,4 @@
 import logging
-import os
 import yaml
 from ising.simulator import cost_model
 import numpy as np
@@ -8,6 +7,7 @@ from matplotlib.patches import Patch, Rectangle
 import copy
 import math
 import tqdm
+from pathlib import Path
 from get_cacti_cost import get_cacti_cost
 
 def plot_perf_ratio_in_curve(
@@ -17,7 +17,7 @@ def plot_perf_ratio_in_curve(
     title: str | None = None,
     log_scale: bool = True,
     showing_annotation: bool = False,
-    ) -> None:
+) -> None:
     """
     plot the performance ratio in curve
     :param latency_mismatch_in_list: latency mismatch [%] in list, each element is a list
@@ -61,7 +61,7 @@ def plot_perf_ratio_in_curve(
                     xytext=(0, 5),
                     ha="center",
                     fontsize=12,
-                    color="black"
+                    color="black",
                 )
                 ax[1].annotate(
                     f"{energy_mismatch_in_list[idx][i]:.0f}x",
@@ -70,7 +70,7 @@ def plot_perf_ratio_in_curve(
                     xytext=(0, 5),
                     ha="center",
                     fontsize=12,
-                    color="black"
+                    color="black",
                 )
 
     # set the x tick labels
@@ -106,10 +106,12 @@ def plot_perf_ratio_in_curve(
     ax[1].grid(which="both")
     ax[1].set_axisbelow(True)
     plt.tight_layout()
-    if os.path.exists("./outputs") is False:
-        os.makedirs("./outputs")
+    Path("./outputs").mkdir(parents=True, exist_ok=True)
     plt.savefig(f"./outputs/expr_perf_ratio_{title}.png", dpi=300)
-    logging.warning(f"Saved performance ratio figure to ./outputs/expr_perf_ratio_{title}.png")
+    logging.warning(
+        f"Saved performance ratio figure to ./outputs/expr_perf_ratio_{title}.png"
+    )
+
 
 def plot_results_breakdown_in_bar_chart(
     cycles_breakdown_in_list: list,
@@ -127,7 +129,7 @@ def plot_results_breakdown_in_bar_chart(
     disable_right_axis: bool = False,
     showing_legend: bool = True,
     showing_annotation: bool = True,
-    ) -> None:
+) -> None:
     """
     plot the results breakdown in bar chart
     :param cycles_breakdown_in_list: cycles [ns] in list, each element is a list
@@ -147,12 +149,12 @@ def plot_results_breakdown_in_bar_chart(
     :param showing_annotation: whether to show the annotation
     """
     colors = {
-        "mac": '#45B7D1',  # MAC (MACs)
-        "add": '#FFA07A',  # ADD (Adds)
-        "comp": '#98D8C8',  # COMP (COMPs)
-        "spin_updating": '#F7DC6F',  # SU (Spin Updating)
-        "sram": '#4ECDC4',  # L1 (On-chip Memory)
-        "dram": '#FF6B6B',  # DRAM (Off-chip Memory)
+        "mac": "#45B7D1",  # MAC (MACs)
+        "add": "#FFA07A",  # ADD (Adds)
+        "comp": "#98D8C8",  # COMP (COMPs)
+        "spin_updating": "#F7DC6F",  # SU (Spin Updating)
+        "sram": "#4ECDC4",  # L1 (On-chip Memory)
+        "dram": "#FF6B6B",  # DRAM (Off-chip Memory)
     }
     hatchs = ["x", "//", "oo", "++", "**", "||", "..", "\\\\"]
     # plotting the results
@@ -169,9 +171,15 @@ def plot_results_breakdown_in_bar_chart(
                 if component not in case:
                     case[component] = 0
             breakdown = [case[component] for case in details]
-            
+
             ax[0].bar(
-                [i + width * idx for i in x], breakdown, bottom=base, width=width, color=colors[component], edgecolor="black", hatch=hatchs[idx]
+                [i + width * idx for i in x],
+                breakdown,
+                bottom=base,
+                width=width,
+                color=colors[component],
+                edgecolor="black",
+                hatch=hatchs[idx],
             )
             base += breakdown
 
@@ -185,7 +193,13 @@ def plot_results_breakdown_in_bar_chart(
                     case[component] = 0
             breakdown = [case[component] for case in details]
             ax[1].bar(
-                [i + width * idx for i in x], breakdown, bottom=base, width=width, color=colors[component], edgecolor="black", hatch=hatchs[idx]
+                [i + width * idx for i in x],
+                breakdown,
+                bottom=base,
+                width=width,
+                color=colors[component],
+                edgecolor="black",
+                hatch=hatchs[idx],
             )
             base += breakdown
 
@@ -199,7 +213,7 @@ def plot_results_breakdown_in_bar_chart(
                     xytext=(0, 5),
                     ha="center",
                     fontsize=12,
-                    color="black"
+                    color="black",
                 )
         for idx in range(len(energy_in_list)):
             for i in range(len(energy_in_list[idx])):
@@ -210,7 +224,7 @@ def plot_results_breakdown_in_bar_chart(
                     xytext=(0, 5),
                     ha="center",
                     fontsize=12,
-                    color="black"
+                    color="black",
                 )
 
     if not disable_right_axis:
@@ -240,7 +254,9 @@ def plot_results_breakdown_in_bar_chart(
     ax[1].set_xlabel("Problem Size", fontsize=15, weight="normal")
     ax[1].set_ylabel("Energy to Solution [pJ]", fontsize=15, weight="normal")
     if not disable_right_axis:
-        ax0_right.set_ylabel("TOP/s/mm$^2$", fontsize=15, weight="normal", color="#B32828")
+        ax0_right.set_ylabel(
+            "TOP/s/mm$^2$", fontsize=15, weight="normal", color="#B32828"
+        )
         ax1_right.set_ylabel("TOP/s/W", fontsize=15, weight="normal", color="#B32828")
         ax0_right.tick_params(axis="y", colors="#B32828")
         ax1_right.tick_params(axis="y", colors="#B32828")
@@ -254,7 +270,9 @@ def plot_results_breakdown_in_bar_chart(
             topsmm2_encoding_1 = topsmm2_in_list[0][idx]
             topsmm2_encoding_2 = topsmm2_in_list[1][idx]
             topsmm2_encoding_3 = topsmm2_in_list[2][idx]
-            topsmm2_min = min(topsmm2_encoding_1, topsmm2_encoding_2, topsmm2_encoding_3)
+            topsmm2_min = min(
+                topsmm2_encoding_1, topsmm2_encoding_2, topsmm2_encoding_3
+            )
             topsmm2_copy[0][idx] /= topsmm2_min
             topsmm2_copy[1][idx] /= topsmm2_min
             topsmm2_copy[2][idx] /= topsmm2_min
@@ -275,7 +293,7 @@ def plot_results_breakdown_in_bar_chart(
                     xytext=(0, 5),
                     ha="center",
                     fontsize=15,
-                    color="black"
+                    color="black",
                 )
                 ax1_right.annotate(
                     f"{topsw_copy[idx][i]:.0f}x",
@@ -284,7 +302,7 @@ def plot_results_breakdown_in_bar_chart(
                     xytext=(0, 5),
                     ha="center",
                     fontsize=15,
-                    color="black"
+                    color="black",
                 )
 
     # set the x tick labels
@@ -297,24 +315,66 @@ def plot_results_breakdown_in_bar_chart(
         # create custom legend handles: one for component colors and one for encoding hatch styles
         comp_labels = component_tag_list if component_tag_list else component_list
         # color handles (components)
-        color_handles = [Patch(facecolor=colors[comp], edgecolor='black', label=comp_labels[idx])
-                        for idx, comp in enumerate(component_list)]
+        color_handles = [
+            Patch(facecolor=colors[comp], edgecolor="black", label=comp_labels[idx])
+            for idx, comp in enumerate(component_list)
+        ]
         # hatch handles (encodings / labels)
         hatch_handles = []
         for idx, lab in enumerate(label_in_list):
             h = hatchs[idx % len(hatchs)]
             # Rectangle with hatch to show hatch style; use white facecolor so hatch is visible
-            hatch_handles.append(Rectangle((0, 0), 1, 1, facecolor='white', edgecolor='black', hatch=h, label=lab))
+            hatch_handles.append(
+                Rectangle(
+                    (0, 0),
+                    1,
+                    1,
+                    facecolor="white",
+                    edgecolor="black",
+                    hatch=h,
+                    label=lab,
+                )
+            )
 
         # Add legends to the left subplot (ax[0]). Use two separate legend objects.
-        legend_comp = ax[0].legend(handles=color_handles, title='Component', loc='upper left', bbox_to_anchor=(0, 1), fontsize=15, title_fontsize=15, ncol=2)
-        ax[0].legend(handles=hatch_handles, title='Encoding', loc='upper right', bbox_to_anchor=(1, 1), fontsize=15, title_fontsize=15)
+        legend_comp = ax[0].legend(
+            handles=color_handles,
+            title="Component",
+            loc="upper left",
+            bbox_to_anchor=(0, 1),
+            fontsize=15,
+            title_fontsize=15,
+            ncol=2,
+        )
+        ax[0].legend(
+            handles=hatch_handles,
+            title="Encoding",
+            loc="upper right",
+            bbox_to_anchor=(1, 1),
+            fontsize=15,
+            title_fontsize=15,
+        )
         # keep the first legend visible
         ax[0].add_artist(legend_comp)
 
         # Mirror legends on the right subplot (ax[1]) for consistency
-        legend_comp_r = ax[1].legend(handles=color_handles, title='Component', loc='upper left', bbox_to_anchor=(0, 1), fontsize=15, title_fontsize=15, ncol=2)
-        ax[1].legend(handles=hatch_handles, title='Encoding', loc='upper right', bbox_to_anchor=(1, 1), fontsize=15, title_fontsize=15)
+        legend_comp_r = ax[1].legend(
+            handles=color_handles,
+            title="Component",
+            loc="upper left",
+            bbox_to_anchor=(0, 1),
+            fontsize=15,
+            title_fontsize=15,
+            ncol=2,
+        )
+        ax[1].legend(
+            handles=hatch_handles,
+            title="Encoding",
+            loc="upper right",
+            bbox_to_anchor=(1, 1),
+            fontsize=15,
+            title_fontsize=15,
+        )
         ax[1].add_artist(legend_comp_r)
 
     # set the y scale to log scale
@@ -344,61 +404,67 @@ def plot_results_breakdown_in_bar_chart(
     ax[1].grid(which="both")
     ax[1].set_axisbelow(True)
     plt.tight_layout()
-    if os.path.exists("./outputs") is False:
-        os.makedirs("./outputs")
+    Path("./outputs").mkdir(parents=True, exist_ok=True)
     plt.savefig(f"./outputs/expr_{title}.png", dpi=300)
     logging.warning(f"Saved breakdown figure to ./outputs/expr_{title}.png")
 
 
 if __name__ == "__main__":
-    logging_format = ("%(asctime)s - %(funcName)s +%(lineno)s - %(levelname)s - %(message)s")
+    logging_format = (
+        "%(asctime)s - %(funcName)s +%(lineno)s - %(levelname)s - %(message)s"
+    )
     logging.basicConfig(level=logging.WARNING, format=logging_format)
-    hw_model_org = yaml.safe_load(open("./inputs/hardware/sachi.yaml", 'r'))
-    workload_org = yaml.safe_load(open("./inputs/workload/mc_500.yaml", 'r'))
-    mapping_org = yaml.safe_load(open("./inputs/mapping/sachi.yaml", 'r'))
+    hw_model_org = yaml.safe_load(Path("./inputs/hardware/sachi.yaml").open("r"))
+    workload_org = yaml.safe_load(Path("./inputs/workload/mc_500.yaml").open("r"))
+    mapping_org = yaml.safe_load(Path("./inputs/mapping/sachi.yaml").open("r"))
     component_list = ["mac", "spin_updating", "sram", "dram"]
     component_tag_list = ["MAC", "L1", "L2", "DRAM"]
     # experiment: sweep different problem sizes and encoding methods
     pb_pool = [
         # pb_size, degree density, weight precision, with bias, problem specific weight
-        [200, 0.015, 1, False, True], # MaxCut
-        [4000, 0.015, 1, False, True], # MaxCut
-        [200, 2*((200**0.5)-1)/199, 16, True, True], # TSP
-        [8000, 2*((8000**0.5)-1)/7999, 16, True, True], # TSP
-        [200, 28/100, 3, True, False], # Sudoku
-        [729, 28/729, 3, True, False], # Sudoku
-        [64, 1, 16, True, False], # MIMO
-        [256, 1, 16, True, False], # MIMO
+        [200, 0.015, 1, False, True],  # MaxCut
+        [4000, 0.015, 1, False, True],  # MaxCut
+        [200, 2 * ((200**0.5) - 1) / 199, 16, True, True],  # TSP
+        [8000, 2 * ((8000**0.5) - 1) / 7999, 16, True, True],  # TSP
+        [200, 28 / 100, 3, True, False],  # Sudoku
+        [729, 28 / 729, 3, True, False],  # Sudoku
+        [64, 1, 16, True, False],  # MIMO
+        [256, 1, 16, True, False],  # MIMO
     ]
     label_in_list = ["coordinate", "neighbor", "full-matrix"]
     benchmark_name_in_list = [f"{pb_spec[0]}" for pb_spec in pb_pool]
-    
+
     # general settings
     sram_size_in_KB = 160
     num_macros = 16
     d2 = 100
     cim_depth = 80
 
-
-    cycles_in_list = [[],[],[]]
-    energy_in_list = [[],[],[]]
-    cycle_breakdown_in_list = [[],[],[]]
-    energy_breakdown_in_list = [[],[],[]]
-    req_sram_size_in_list = [[],[],[]]
-    tops_in_list = [[],[],[]]
-    topsw_in_list = [[],[],[]]
-    topsmm2_in_list = [[],[],[]]
+    cycles_in_list = [[], [], []]
+    energy_in_list = [[], [], []]
+    cycle_breakdown_in_list = [[], [], []]
+    energy_breakdown_in_list = [[], [], []]
+    req_sram_size_in_list = [[], [], []]
+    tops_in_list = [[], [], []]
+    topsw_in_list = [[], [], []]
+    topsmm2_in_list = [[], [], []]
     latency_mismatch_in_list = [[], [], []]
     energy_mismatch_in_list = [[], [], []]
     title = f"encoding_comparison"
-    pbar = tqdm.tqdm(total=len(pb_pool)*len(label_in_list))
+    pbar = tqdm.tqdm(total=len(pb_pool) * len(label_in_list))
     for pb_spec in pb_pool:
         for encoding_idx in range(len(label_in_list)):
             encoding = label_in_list[encoding_idx]
             hw_model = copy.deepcopy(hw_model_org)
             workload = copy.deepcopy(workload_org)
             mapping = copy.deepcopy(mapping_org)
-            pb_size, aver_density, weight_shared_precision, with_bias, problem_specific_weight = pb_spec
+            (
+                pb_size,
+                aver_density,
+                weight_shared_precision,
+                with_bias,
+                problem_specific_weight,
+            ) = pb_spec
             if encoding == "coordinate":
                 bit_per_weight = weight_shared_precision + math.log2(pb_size)
             elif encoding == "neighbor":
@@ -413,18 +479,43 @@ if __name__ == "__main__":
             workload["with_bias"] = with_bias
             workload["problem_specific_weight"] = problem_specific_weight
             hw_model["operational_array"]["encoding"] = encoding
-            hw_model["memories"]["sram_160KB"]["size"] = sram_size_in_KB * 1024 * 8  # in bits
+            hw_model["memories"]["sram_160KB"]["size"] = (
+                sram_size_in_KB * 1024 * 8
+            )  # in bits
             hw_model["memories"]["sram_160KB"]["area"] *= sram_size_in_KB / 160
             hw_model["operational_array"]["sizes"] = [1, d2, num_macros]
             hw_model["memories"]["cim_memory"]["bandwidth"] = d2 * bit_per_weight
-            hw_model["memories"]["cim_memory"]["size"] = cim_depth * hw_model["memories"]["cim_memory"]["bandwidth"]  # in bits
-            _, _, hw_model["memories"]["cim_memory"]["r_cost"], hw_model["memories"]["cim_memory"]["w_cost"] = get_cacti_cost(cacti_path='./cacti/cacti_master', tech_node=0.028,
-                                                                            mem_type='sram', mem_size_in_byte=hw_model["memories"]["cim_memory"]["size"]/8,
-                                                                            bw=hw_model["memories"]["cim_memory"]["bandwidth"])
+            hw_model["memories"]["cim_memory"]["size"] = (
+                cim_depth * hw_model["memories"]["cim_memory"]["bandwidth"]
+            )  # in bits
+            (
+                _,
+                _,
+                hw_model["memories"]["cim_memory"]["r_cost"],
+                hw_model["memories"]["cim_memory"]["w_cost"],
+            ) = get_cacti_cost(
+                cacti_path="./cacti/cacti_master",
+                tech_node=0.028,
+                mem_type="sram",
+                mem_size_in_byte=hw_model["memories"]["cim_memory"]["size"] / 8,
+                bw=hw_model["memories"]["cim_memory"]["bandwidth"],
+            )
             # linearly scale the mac/add/compare energy according to weight precision, linearly is because it is 1-bit*n-bit a mac logic
-            hw_model["operational_array"]["mac_energy"] = hw_model["operational_array"]["mac_energy"] / 8 * weight_shared_precision
-            hw_model["operational_array"]["add_energy"] = hw_model["operational_array"]["add_energy"] / 8 * weight_shared_precision
-            hw_model["operational_array"]["compare_energy"] = hw_model["operational_array"]["compare_energy"] / 8 * weight_shared_precision
+            hw_model["operational_array"]["mac_energy"] = (
+                hw_model["operational_array"]["mac_energy"]
+                / 8
+                * weight_shared_precision
+            )
+            hw_model["operational_array"]["add_energy"] = (
+                hw_model["operational_array"]["add_energy"]
+                / 8
+                * weight_shared_precision
+            )
+            hw_model["operational_array"]["compare_energy"] = (
+                hw_model["operational_array"]["compare_energy"]
+                / 8
+                * weight_shared_precision
+            )
             if encoding == "full-matrix":
                 # full-matrix has 0.24x energy due to no decoding, the ratio is extracted from PRIM-CAEFA paper, Fig. 7
                 hw_model["operational_array"]["mac_energy"] *= 0.24
@@ -440,7 +531,9 @@ if __name__ == "__main__":
             energy_in_list[encoding_idx].append(energy_to_solution)
             cycle_breakdown_in_list[encoding_idx].append(cme["latency_breakdown_plot"])
             energy_breakdown_in_list[encoding_idx].append(cme["energy_breakdown_plot"])
-            req_sram_size_in_list[encoding_idx].append(cme["req_sram_size_bit"]/8/1024)  # in KB
+            req_sram_size_in_list[encoding_idx].append(
+                cme["req_sram_size_bit"] / 8 / 1024
+            )  # in KB
             tops_in_list[encoding_idx].append(cme["tops"])
             topsw_in_list[encoding_idx].append(cme["topsw"])
             topsmm2_in_list[encoding_idx].append(cme["topsmm2"])
@@ -476,4 +569,3 @@ if __name__ == "__main__":
         log_scale=False,
         showing_annotation=False,
     )
-

@@ -2,14 +2,15 @@ import logging
 import sys
 from ising.simulator import cost_model
 import yaml
+from pathlib import Path
 
 if __name__ == "__main__":
     logging_level = logging.INFO
     logging_format = "%(asctime)s - %(filename)s - %(funcName)s +%(lineno)s - %(levelname)s - %(message)s"
     logging.basicConfig(level=logging_level, format=logging_format, stream=sys.stdout)
-    hw_model = yaml.safe_load(open("./inputs/hardware/sachi.yaml", "r"))
-    workload = yaml.safe_load(open("./inputs/workload/mc_500.yaml", "r"))
-    mapping = yaml.safe_load(open("./inputs/mapping/sachi.yaml", "r"))
+    hw_model = yaml.safe_load(Path("./inputs/hardware/sachi.yaml").open("r"))
+    workload = yaml.safe_load(Path("./inputs/workload/mc_500.yaml").open("r"))
+    mapping = yaml.safe_load(Path("./inputs/mapping/sachi.yaml").open("r"))
     cme = cost_model(hw_model, workload, mapping)
     logging.info("Cycles to solution: %d", cme["cycles_to_solution"])
     logging.info("Time to solution: %f ns", cme["time_to_solution"])

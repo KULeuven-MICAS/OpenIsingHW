@@ -26,7 +26,9 @@ if __name__ == "__main__":
         if validation == "sachi":
             benchmark_dict = validation_to_sachi()
             plot_results_in_bar_chart_with_breakdown(
-                benchmark_dict, output_file="outputs/sachi.png", text_type="absolute",
+                benchmark_dict,
+                output_file="outputs/sachi.png",
+                text_type="absolute",
                 latency_normalize=False,
                 log_scale=True,
                 text_annotation=False,
