@@ -18,9 +18,9 @@ Instead of assuming perfect hardware utilization and unlimited peripheral memori
 | **Graph density** | appro. 0.015 | 0.05-0.25 | 0.04 | 1 |
 | **Weight precision** | 1b/2b | 10b-16b | 3b | ~16b |
 | **With magnetic field (h)** | N | Y | Y | Y |
-| **Typical problem size** | 800-4,000 nodes | 10-100 cities | 81 cells | 4-32 users |
+| **Typical problem size (M)** | 800-4,000 nodes | 10-100 cities | 81 cells | 4-32 users |
 | **Required Ising nodes (N)** | 800-4,000 | 100-10,000 | <729 | 8-256 |
-| **Average degree** | 4-50 | 2 ($\sqrt{N}-1)$ | 28 | N - 1
+| **Average gragh degree** | 4-50 | 2 ($\sqrt{N}-1)$ | 28 | N - 1
 
 ## **Getting Started**
 

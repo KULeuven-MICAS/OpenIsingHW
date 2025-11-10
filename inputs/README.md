@@ -12,7 +12,7 @@ This folder defines the input specification required by the cost model, includin
 - *r_cost*: [float] energy cost per read access.
 - *w_cost*: [float] energy cost per write access.
 - *area*: [float] memory area.
-- *operands*: [list]served operand.
+- *operands*: [list] served operand.
 - *bandwidth*: [int] memory port width (in bit) per access.
 - *served_dimensions*: [list] shared dimension.
 
@@ -26,7 +26,7 @@ This folder defines the input specification required by the cost model, includin
 - *dimensions*: [list] existing computation dimension.
 - *sizes*: [list] computation dimension sizes.
 - *tclk*: [float] clock cycle time (in ns).
-- *encoding*: [str] wight compression method, one from [full-matrix, triangular, coordinate, neighbor].
+- *encoding*: [str] weight compression method, one from [full-matrix, triangular, coordinate, neighbor].
 - *memory_double_buffering*: [bool] if memory is double bufferred (i.e., read and write operation happens in parallel).
 
 ## Mapping specification
@@ -41,7 +41,7 @@ This folder defines the input specification required by the cost model, includin
 
 *operator_type*: [str] workload operator type (name)
 
-*loop_dims": [list] workload dimension name.
+*loop_dims*: [list] workload dimension name.
 
 *loop_sizes*: [list] workload dimension sizes.
 

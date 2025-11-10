@@ -1,6 +1,6 @@
 import logging
 import os
-from api import plot_results_in_bar_chart, plot_results_in_bar_chart_with_breakdown
+from api import plot_results_in_bar_chart_with_breakdown
 
 
 def validation_to_sachi():
@@ -144,9 +144,6 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging_level, format=logging_format)
     if os.path.exists("output") is False:
         os.makedirs("output")
-    # plot_results_in_bar_chart(
-    #     validation_to_sachi(), output_file="output/sachi.png", text_type="absolute"
-    # )
     plot_results_in_bar_chart_with_breakdown(
         validation_to_sachi(),
         output_file="outputs/sachi_breakdown.png",
