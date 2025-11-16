@@ -322,9 +322,10 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging_level, format=logging_format)
     plot_results_in_bar_chart_with_breakdown(
         benchmark_dict=validation_to_prim_caefa(),
-        output_file="outputs/prim_caefa.png",
+        output_file="outputs/prim_caefa.svg",
         text_type="absolute",
         with_latency_breakdown=True,
         latency_normalize=True,
+        energy_normalize=True,
         log_scale=False,
     )

@@ -9,6 +9,7 @@ def plot_results_in_bar_chart_with_breakdown(
     text_type: str = "absolute",
     with_latency_breakdown: bool = False,
     latency_normalize: bool = True,
+    energy_normalize: bool = False,
     with_energy_breakdown: bool = False,
     log_scale: bool = True,
     text_annotation: bool = True,
@@ -20,6 +21,7 @@ def plot_results_in_bar_chart_with_breakdown(
     :param text_type: text type to annotate, either absolute or relative
     :param with_latency_breakdown: whether to include latency breakdown in the bar chart
     :param latency_normalize: whether to normalize the latency to the minimum reported value
+    :param energy_normalize: whether to normalize the energy to the minimum reported value
     :param with_energy_breakdown: whether to include energy breakdown in the bar chart
     :param log_scale: whether to use log scale for the y-axis
     :param text_annotation: whether to add text annotation for the mismatch values
@@ -56,6 +58,11 @@ def plot_results_in_bar_chart_with_breakdown(
         latency_reported = [
             latency / min_latency_reported for latency in latency_reported
         ]
+
+    if energy_normalize:
+        min_energy_modeled = min(energy_model)
+        energy_model = [energy / min_energy_modeled for energy in energy_model]
+        energy_reported = [energy / min_energy_modeled for energy in energy_reported]
 
     # add average result to each list
     benchmark_names.append("Average")

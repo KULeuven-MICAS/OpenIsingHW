@@ -28,6 +28,7 @@ if __name__ == "__main__":
                 output_file="outputs/sachi.png",
                 text_type="absolute",
                 latency_normalize=False,
+                energy_normalize=False,
                 log_scale=True,
                 text_annotation=False,
             )
@@ -39,6 +40,7 @@ if __name__ == "__main__":
                 text_type="relative",
                 with_latency_breakdown=True,
                 latency_normalize=True,
+                energy_normalize=True,
                 log_scale=False,
                 text_annotation=False,
             )
@@ -50,6 +52,7 @@ if __name__ == "__main__":
                 text_type="absolute",
                 with_latency_breakdown=True,
                 latency_normalize=False,
+                energy_normalize=False,
                 log_scale=True,
                 text_annotation=False,
             )
@@ -61,6 +64,7 @@ if __name__ == "__main__":
                 text_type="absolute",
                 with_latency_breakdown=True,
                 latency_normalize=False,
+                energy_normalize=False,
                 log_scale=True,
                 text_annotation=False,
             )
