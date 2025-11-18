@@ -121,8 +121,6 @@ def cost_model(
     left_workload_dim_size: dict = copy.deepcopy(workload_dim_sizes)
     for d, item in spatial_mapping_hint.items():
         left_workload_dim_size[item] /= parfor_hw[d]
-    for d, value in left_workload_dim_size.items():  # round up
-        left_workload_dim_size[d] = math.ceil(value)
 
     # derive the mapping: temporal
     mem_sizes_bit: dict = {}
@@ -162,7 +160,7 @@ def cost_model(
             mem_sizes_bias_bit_min = (
                 workload["operand_precision"]["H"]
                 * math.prod([value for key, value in parfor_sw.items() if key in ["I"]])
-                * math.prod([value for key, value in allocated_loops_total])
+                * math.prod([value for key, value in allocated_loops_total if key in ["I"]])
             )  # for bias
             mem_sizes_bit_min = mem_sizes_weight_bit_min + mem_sizes_bias_bit_min
             allowed_loop_size = mem_sizes_bit[mem] / mem_sizes_bit_min
@@ -185,6 +183,17 @@ def cost_model(
                     break
         temfor_hw[mem] = allocated_loops
         allocated_loops_total = allocated_loops + allocated_loops_total
+
+    # round up the temfor_hw loop sizes
+    temfor_sw_wo_ceil = copy.deepcopy(temfor_sw)
+    # for mem in temfor_hw.keys():
+    #     for idx in range(len(temfor_hw[mem])):
+    #         temfor_hw[mem][idx] = (
+    #             temfor_hw[mem][idx][0],
+    #             math.ceil(temfor_hw[mem][idx][1]),
+    #         )
+    # for idx in range(len(temfor_sw)):
+    #     temfor_sw[idx] = (temfor_sw[idx][0], math.ceil(temfor_sw[idx][1]))
 
     # calculate the top-level memory idx
     mem_list = [key for key in mem_sizes_bit.keys()]
@@ -414,21 +423,22 @@ def cost_model(
         )
 
     # calculate the energy of step one: computation
+    ideal_latency_wo_ceil = math.prod([value for key, value in temfor_sw_wo_ceil])
     mac_energy = (
-        hw_model["operational_array"]["mac_energy"] * parfor_size * ideal_latency
+        hw_model["operational_array"]["mac_energy"] * parfor_size * ideal_latency_wo_ceil
     )
     if workload.get("with_bias", False):
         add_energy = (
             hw_model["operational_array"]["add_energy"]
             * parfor_size_bias
-            * ideal_latency
+            * ideal_latency_wo_ceil
         )
     else:
         add_energy = 0
     compare_energy = (
         hw_model["operational_array"]["compare_energy"]
         * parfor_size_bias
-        * ideal_latency
+        * ideal_latency_wo_ceil
     )
     energy_compute_total = mac_energy + add_energy + compare_energy
     energy_collect: dict = {
@@ -532,6 +542,28 @@ def cost_model(
         + workload["operand_precision"]["H"] * workload_dim_sizes["I"]
     )
 
+    # calculate peak metrics, assuming full utilization
+    tops_peak_macro = mac_count * 2 / hw_model["operational_array"]["tclk"] / 1e3  # tera operations per second
+    memory_cycle_in_peak_system = 1
+    for mem_idx in range(len(mem_list)):
+        cycle_in_peak_system = math.ceil(
+            (bit_per_weight * mac_count) / mem_bw_list[mem_idx]
+        )
+        if cycle_in_peak_system > memory_cycle_in_peak_system:
+            memory_cycle_in_peak_system = cycle_in_peak_system
+    tops_peak_system = mac_count * 2 / memory_cycle_in_peak_system / hw_model["operational_array"]["tclk"] / 1e3  # tera operations per second
+    topsmm2_peak_macro = tops_peak_macro / (
+        area_collect["mac"] + area_collect["add"] + area_collect["compare"]
+    )
+    topsmm2_peak_system = tops_peak_system / total_area
+    topsw_peak_macro = 2 / hw_model["operational_array"]["mac_energy"]  # tera operations per joule
+    memory_energy_in_peak_system = 0
+    for mem_idx in range(len(mem_list)):
+        memory_energy_in_peak_system += (hw_model["memories"][mem_list[mem_idx]][
+            "r_cost"
+        ] + hw_model["memories"][mem_list[mem_idx]]["w_cost"]) / mem_bw_list[mem_idx] * bit_per_weight
+    topsw_peak_system = 2 / memory_energy_in_peak_system  # tera operations per joule
+
     # interpret breakdown for plotting
     latency_system_breakdown_plot = {
         "mac": latency_system_breakdown["computation"],
@@ -554,12 +586,39 @@ def cost_model(
         energy_dram_wo_onloading = 0
     energy_system_breakdown_plot = {
         "mac": energy_system_breakdown["computation"],
-        "spin_updating": energy_system_breakdown[
-            "spin_updating"
-        ],  # L1 SRAM (just labeled as spin_updating here)
-        "sram": energy_system_breakdown["memory"] - energy_dram_wo_onloading,  # L2 SRAM
-        "dram": energy_dram_wo_onloading + energy_system_breakdown["on_loading"],
+        # L1 SRAM (just labeled as spin_updating here)
+        "spin_updating": energy_collect["cim_memory"]["wr"] + energy_collect["cim_memory"]["rd"],
+        "dram": energy_dram_wo_onloading,
     }
+    if "sram_160KB" in energy_collect.keys():
+        energy_system_breakdown_plot["sram"] = energy_collect["sram_160KB"]["wr"] + energy_collect["sram_160KB"]["rd"]  # L2 SRAM
+    else:
+        energy_system_breakdown_plot["sram"] = 0
+    # add the spin_updating energy to the correct memory level
+    if top_mem_idx == 0:
+        energy_system_breakdown_plot["spin_updating"] += energy_system_breakdown["spin_updating"]
+    elif top_mem_idx == 1:
+        energy_system_breakdown_plot["sram"] += energy_system_breakdown["spin_updating"]
+    elif top_mem_idx == 2:
+        energy_system_breakdown_plot["dram"] += energy_system_breakdown["spin_updating"]
+    else:
+        raise ValueError("top_mem_idx exceeds the memory level.")
+    # add the onloading energy to the correct memory level
+    for mem_key, spec in onloading_energy_collect.items():
+        if mem_key == "cim_memory":
+            energy_system_breakdown_plot["spin_updating"] += sum(
+                [value for value in spec.values()]
+            )
+        elif mem_key == "sram_160KB":
+            energy_system_breakdown_plot["sram"] += sum(
+                [value for value in spec.values()]
+            )
+        elif mem_key == "dram":
+            energy_system_breakdown_plot["dram"] += sum(
+                [value for value in spec.values()]
+            )
+        else:
+            raise ValueError("mem_key not recognized in onloading energy breakdown.")
     area_breakdown_plot = {
         "mac": area_collect["mac"] + area_collect["add"] + area_collect["compare"],
         "spin_updating": area_collect["cim_memory"],
@@ -596,6 +655,13 @@ def cost_model(
         "hw_model": hw_model,
         "mapping": mapping,
         "encoding_scheme": encoding_scheme,
+        # peak metrics
+        "tops_peak_macro": tops_peak_macro,
+        "tops_peak_system": tops_peak_system,
+        "topsmm2_peak_macro": topsmm2_peak_macro,
+        "topsmm2_peak_system": topsmm2_peak_system,
+        "topsw_peak_macro": topsw_peak_macro,
+        "topsw_peak_system": topsw_peak_system,
     }
 
     return cme
