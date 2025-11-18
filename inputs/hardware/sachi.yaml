@@ -55,6 +55,6 @@ operational_array:
   compare_area: 0.000020 # mm^2, 0.614*8/0.24@28nm
   dimensions: [D1, D2, D3]
   sizes: [1, 100, 16]
-  tclk: 40 # ns
+  tclk: 3.3 # ns
   encoding: coordinate # [full-matrix, triangular, coordinate, neighbor]
   memory_double_buffering: true
