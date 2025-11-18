@@ -562,11 +562,11 @@ if __name__ == "__main__":
         showing_legend=False,
         showing_annotation=False,
     )
-    plot_perf_ratio_in_curve(
-        latency_mismatch_in_list=latency_mismatch_in_list,
-        energy_mismatch_in_list=energy_mismatch_in_list,
-        benchmark_name_in_list=benchmark_name_in_list,
-        title=f"{title}",
-        log_scale=False,
-        showing_annotation=False,
-    )
+    # plot_perf_ratio_in_curve(
+    #     latency_mismatch_in_list=latency_mismatch_in_list,
+    #     energy_mismatch_in_list=energy_mismatch_in_list,
+    #     benchmark_name_in_list=benchmark_name_in_list,
+    #     title=f"{title}",
+    #     log_scale=False,
+    #     showing_annotation=False,
+    # )
