@@ -248,7 +248,7 @@ def plot_results_breakdown_in_bar_chart(
         marker="o",
         color="black",
         markeredgecolor="white",
-        label=f"TOP/s (macro)",
+        label="TOP/s (macro)",
         markersize=12,
     )
     details = [x[0] for x in tops_peak_system_in_list]
@@ -258,7 +258,7 @@ def plot_results_breakdown_in_bar_chart(
         marker="s",
         color="black",
         markeredgecolor="white",
-        label=f"TOP/s (system)",
+        label="TOP/s (system)",
         markersize=12,
     )
     ax0_right = ax[0].twinx()
@@ -269,7 +269,7 @@ def plot_results_breakdown_in_bar_chart(
         marker="o",
         color="#B32828",
         markeredgecolor="white",
-        label=f"TOP/s/mm$^2$ (macro)",
+        label="TOP/s/mm$^2$ (macro)",
         markersize=12,
     )
     details = [x[0] for x in topsmm2_peak_system_in_list]
@@ -279,7 +279,7 @@ def plot_results_breakdown_in_bar_chart(
         marker="s",
         color="#B32828",
         markeredgecolor="white",
-        label=f"TOP/s/mm$^2$ (system)",
+        label="TOP/s/mm$^2$ (system)",
         markersize=12,
     )
 

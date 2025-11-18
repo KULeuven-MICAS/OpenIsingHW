@@ -543,7 +543,7 @@ def cost_model(
     )
 
     # calculate peak metrics, assuming full utilization
-    tops_peak_macro = mac_count * 2 / hw_model["operational_array"]["tclk"] / 1e3  # tera operations per second
+    tops_peak_macro = mac_count * 2 / hw_model["operational_array"]["tclk"] / 1e3
     memory_cycle_in_peak_system = 1
     for mem_idx in range(len(mem_list)):
         cycle_in_peak_system = math.ceil(
@@ -551,7 +551,7 @@ def cost_model(
         )
         if cycle_in_peak_system > memory_cycle_in_peak_system:
             memory_cycle_in_peak_system = cycle_in_peak_system
-    tops_peak_system = mac_count * 2 / memory_cycle_in_peak_system / hw_model["operational_array"]["tclk"] / 1e3  # tera operations per second
+    tops_peak_system = mac_count * 2 / memory_cycle_in_peak_system / hw_model["operational_array"]["tclk"] / 1e3
     topsmm2_peak_macro = tops_peak_macro / (
         area_collect["mac"] + area_collect["add"] + area_collect["compare"]
     )
@@ -590,8 +590,8 @@ def cost_model(
         "spin_updating": energy_collect["cim_memory"]["wr"] + energy_collect["cim_memory"]["rd"],
         "dram": energy_dram_wo_onloading,
     }
-    if "sram_160KB" in energy_collect.keys():
-        energy_system_breakdown_plot["sram"] = energy_collect["sram_160KB"]["wr"] + energy_collect["sram_160KB"]["rd"]  # L2 SRAM
+    if "sram_160KB" in energy_collect.keys(): # L2 SRAM
+        energy_system_breakdown_plot["sram"] = energy_collect["sram_160KB"]["wr"] + energy_collect["sram_160KB"]["rd"]
     else:
         energy_system_breakdown_plot["sram"] = 0
     # add the spin_updating energy to the correct memory level
