@@ -239,17 +239,49 @@ def plot_results_breakdown_in_bar_chart(
     #             edgecolor="black",
     #         )
     #         base += breakdown
-    
+
     # peak metrics
     details = [x[0] for x in tops_peak_macro_in_list]
-    ax[0].plot(num_mac, details, marker="o", color="black", markeredgecolor="white", label=f"TOP/s (macro)", markersize=12)
+    ax[0].plot(
+        num_mac,
+        details,
+        marker="o",
+        color="black",
+        markeredgecolor="white",
+        label=f"TOP/s (macro)",
+        markersize=12,
+    )
     details = [x[0] for x in tops_peak_system_in_list]
-    ax[0].plot(num_mac, details, marker="s", color="black", markeredgecolor="white", label=f"TOP/s (system)", markersize=12)
+    ax[0].plot(
+        num_mac,
+        details,
+        marker="s",
+        color="black",
+        markeredgecolor="white",
+        label=f"TOP/s (system)",
+        markersize=12,
+    )
     ax0_right = ax[0].twinx()
     details = [x[0] for x in topsmm2_peak_macro_in_list]
-    ax0_right.plot(num_mac, details, marker="o", color="#B32828", markeredgecolor="white", label=f"TOP/s/mm$^2$ (macro)", markersize=12)
+    ax0_right.plot(
+        num_mac,
+        details,
+        marker="o",
+        color="#B32828",
+        markeredgecolor="white",
+        label=f"TOP/s/mm$^2$ (macro)",
+        markersize=12,
+    )
     details = [x[0] for x in topsmm2_peak_system_in_list]
-    ax0_right.plot(num_mac, details, marker="s", color="#B32828", markeredgecolor="white", label=f"TOP/s/mm$^2$ (system)", markersize=12)
+    ax0_right.plot(
+        num_mac,
+        details,
+        marker="s",
+        color="#B32828",
+        markeredgecolor="white",
+        label=f"TOP/s/mm$^2$ (system)",
+        markersize=12,
+    )
 
     if showing_annotation:
         # annotate the cycles, energy, area values on top of each bar
@@ -440,7 +472,6 @@ def plot_results_breakdown_in_bar_chart(
             title_fontsize=15,
         )
         ax[2].add_artist(legend_comp_r)
-
 
     # set the y scale to log scale
     ax[0].set_yscale("log")
