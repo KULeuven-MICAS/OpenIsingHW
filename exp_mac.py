@@ -129,6 +129,13 @@ def plot_results_breakdown_in_bar_chart(
     log_scale: bool = True,
     topsmm2_in_list: list = [],
     topsw_in_list: list = [],
+    tops_peak_macro_in_list: list = [],
+    tops_peak_system_in_list: list = [],
+    topsmm2_peak_macro_in_list: list = [],
+    topsmm2_peak_system_in_list: list = [],
+    topsw_peak_macro_in_list: list = [],
+    topsw_peak_system_in_list: list = [],
+    num_mac: list = [],
     disable_right_axis: bool = False,
     showing_legend: bool = True,
     showing_annotation: bool = False,
@@ -149,6 +156,13 @@ def plot_results_breakdown_in_bar_chart(
     :param log_scale: whether to use log scale for y axis
     :param topsmm2_in_list: list of TOPS (MM2) for each data
     :param topsw_in_list: list of TOPS (W) for each data
+    :param tops_peak_macro_in_list: list of peak TOPS for macro for each data
+    :param tops_peak_system_in_list: list of peak TOPS for system for each data
+    :param topsmm2_peak_macro_in_list: list of peak TOPS (MM2) for macro for each data
+    :param topsmm2_peak_system_in_list: list of peak TOPS (MM2) for system for each data
+    :param topsw_peak_macro_in_list: list of peak TOPS (W) for macro for each data
+    :param topsw_peak_system_in_list: list of peak TOPS (W) for system for each data
+    :param num_mac: list of number of MACs for each data
     :param disable_right_axis: whether to disable the right y axis
     :param showing_legend: whether to show the legend
     :param showing_annotation: whether to show the text annotation on top of each bar
@@ -177,7 +191,7 @@ def plot_results_breakdown_in_bar_chart(
                     case[component] = 0
             breakdown = [case[component] for case in details]
 
-            ax[0].bar(
+            ax[1].bar(
                 [i + width * idx for i in x],
                 breakdown,
                 bottom=base,
@@ -196,25 +210,6 @@ def plot_results_breakdown_in_bar_chart(
                 if component not in case:
                     case[component] = 0
             breakdown = [case[component] for case in details]
-            ax[1].bar(
-                [i + width * idx for i in x],
-                breakdown,
-                bottom=base,
-                width=width,
-                color=colors[component],
-                edgecolor="black",
-            )
-            base += breakdown
-
-    for idx in range(len(area_breakdown_in_list)):
-        details = area_breakdown_in_list[idx]
-        base = np.zeros(len(details))
-        for component_idx in range(len(component_list)):
-            component = component_list[component_idx]
-            for case in details:
-                if component not in case:
-                    case[component] = 0
-            breakdown = [case[component] for case in details]
             ax[2].bar(
                 [i + width * idx for i in x],
                 breakdown,
@@ -224,6 +219,37 @@ def plot_results_breakdown_in_bar_chart(
                 edgecolor="black",
             )
             base += breakdown
+
+    # area breakdown
+    # for idx in range(len(area_breakdown_in_list)):
+    #     details = area_breakdown_in_list[idx]
+    #     base = np.zeros(len(details))
+    #     for component_idx in range(len(component_list)):
+    #         component = component_list[component_idx]
+    #         for case in details:
+    #             if component not in case:
+    #                 case[component] = 0
+    #         breakdown = [case[component] for case in details]
+    #         ax[2].bar(
+    #             [i + width * idx for i in x],
+    #             breakdown,
+    #             bottom=base,
+    #             width=width,
+    #             color=colors[component],
+    #             edgecolor="black",
+    #         )
+    #         base += breakdown
+    
+    # peak metrics
+    details = [x[0] for x in tops_peak_macro_in_list]
+    ax[0].plot(num_mac, details, marker="o", color="black", markeredgecolor="white", label=f"TOP/s (macro)", markersize=12)
+    details = [x[0] for x in tops_peak_system_in_list]
+    ax[0].plot(num_mac, details, marker="s", color="black", markeredgecolor="white", label=f"TOP/s (system)", markersize=12)
+    ax0_right = ax[0].twinx()
+    details = [x[0] for x in topsmm2_peak_macro_in_list]
+    ax0_right.plot(num_mac, details, marker="o", color="#B32828", markeredgecolor="white", label=f"TOP/s/mm$^2$ (macro)", markersize=12)
+    details = [x[0] for x in topsmm2_peak_system_in_list]
+    ax0_right.plot(num_mac, details, marker="s", color="#B32828", markeredgecolor="white", label=f"TOP/s/mm$^2$ (system)", markersize=12)
 
     if showing_annotation:
         # annotate the cycles, energy, area values on top of each bar
@@ -263,18 +289,18 @@ def plot_results_breakdown_in_bar_chart(
 
     if not disable_right_axis:
         # plot the topsmm2 and topsw on the right y axis
-        ax0_right = ax[0].twinx()
         ax1_right = ax[1].twinx()
+        ax2_right = ax[2].twinx()
         markers = ["o", "s", "D", "^", "v", "<", ">", "p"]
         for idx in range(len(topsmm2_in_list)):
-            ax0_right.scatter(
+            ax1_right.scatter(
                 [i + width * idx for i in x],
                 topsmm2_in_list[idx],
                 edgecolors="#B32828",
                 facecolors="black",
                 marker=markers[idx],
             )
-            ax1_right.scatter(
+            ax2_right.scatter(
                 [i + width * idx for i in x],
                 topsw_in_list[idx],
                 edgecolors="#B32828",
@@ -283,19 +309,21 @@ def plot_results_breakdown_in_bar_chart(
             )
 
     # set the x, y label
-    ax[0].set_xlabel("Problem Size", fontsize=15, weight="normal")
-    ax[0].set_ylabel("Cycles to Solution [cc]", fontsize=15, weight="normal")
     ax[1].set_xlabel("Problem Size", fontsize=15, weight="normal")
-    ax[1].set_ylabel("Energy to Solution [pJ]", fontsize=15, weight="normal")
+    ax[1].set_ylabel("Cycles to Solution [cc]", fontsize=15, weight="normal")
     ax[2].set_xlabel("Problem Size", fontsize=15, weight="normal")
-    ax[2].set_ylabel("Area [mm$^2$]", fontsize=15, weight="normal")
+    ax[2].set_ylabel("Energy to Solution [pJ]", fontsize=15, weight="normal")
+    ax[0].set_xlabel("#MAC Units", fontsize=15, weight="normal")
+    ax[0].set_ylabel("TOP/s", fontsize=15, weight="normal")
+    ax0_right.set_ylabel("TOP/s/mm$^2$", fontsize=15, weight="normal", color="#B32828")
+    ax0_right.tick_params(axis="y", colors="#B32828")
     if not disable_right_axis:
-        ax0_right.set_ylabel(
+        ax1_right.set_ylabel(
             "TOP/s/mm$^2$", fontsize=15, weight="normal", color="#B32828"
         )
-        ax1_right.set_ylabel("TOP/s/W", fontsize=15, weight="normal", color="#B32828")
-        ax0_right.tick_params(axis="y", colors="#B32828")
+        ax2_right.set_ylabel("TOP/s/W", fontsize=15, weight="normal", color="#B32828")
         ax1_right.tick_params(axis="y", colors="#B32828")
+        ax2_right.tick_params(axis="y", colors="#B32828")
 
     if not disable_right_axis:
         # annotate the topsmm2 and topsw values
@@ -322,7 +350,7 @@ def plot_results_breakdown_in_bar_chart(
 
         for idx in range(len(topsmm2_in_list)):
             for i in range(len(topsmm2_in_list[idx])):
-                ax0_right.annotate(
+                ax1_right.annotate(
                     f"{topsmm2_copy[idx][i]:.0f}x",
                     (i + width * idx, topsmm2_in_list[idx][i]),
                     textcoords="offset points",
@@ -331,7 +359,7 @@ def plot_results_breakdown_in_bar_chart(
                     fontsize=15,
                     color="black",
                 )
-                ax1_right.annotate(
+                ax2_right.annotate(
                     f"{topsw_copy[idx][i]:.0f}x",
                     (i + width * idx, topsw_in_list[idx][i]),
                     textcoords="offset points",
@@ -342,12 +370,8 @@ def plot_results_breakdown_in_bar_chart(
                 )
 
     # set the x tick labels
-    ax[0].set_xticks([i + width * (len(cycles_breakdown_in_list) - 1) / 2 for i in x])
-    ax[0].set_xticklabels(benchmark_name_in_list)
     ax[1].set_xticks([i + width * (len(cycles_breakdown_in_list) - 1) / 2 for i in x])
     ax[1].set_xticklabels(benchmark_name_in_list)
-    # ax[2].set_xticks([i for i in area_x])
-    # ax[2].set_xticklabels([label[5:] for label in label_in_list])
     ax[2].set_xticks([i + width * (len(cycles_breakdown_in_list) - 1) / 2 for i in x])
     ax[2].set_xticklabels(benchmark_name_in_list)
 
@@ -376,29 +400,8 @@ def plot_results_breakdown_in_bar_chart(
                 )
             )
 
-        # Add legends to the left subplot (ax[0]). Use two separate legend objects.
-        legend_comp = ax[0].legend(
-            handles=color_handles,
-            title="Component",
-            loc="upper left",
-            bbox_to_anchor=(0, 1),
-            fontsize=15,
-            title_fontsize=15,
-            ncol=2,
-        )
-        ax[0].legend(
-            handles=hatch_handles,
-            title="Encoding",
-            loc="upper right",
-            bbox_to_anchor=(1, 1),
-            fontsize=15,
-            title_fontsize=15,
-        )
-        # keep the first legend visible
-        ax[0].add_artist(legend_comp)
-
-        # Mirror legends on the right subplot (ax[1]) for consistency
-        legend_comp_r = ax[1].legend(
+        # Add legends to the left subplot (ax[1]). Use two separate legend objects.
+        legend_comp = ax[1].legend(
             handles=color_handles,
             title="Component",
             loc="upper left",
@@ -415,42 +418,57 @@ def plot_results_breakdown_in_bar_chart(
             fontsize=15,
             title_fontsize=15,
         )
-        ax[1].add_artist(legend_comp_r)
+        # keep the first legend visible
+        ax[1].add_artist(legend_comp)
 
-        # add legends to the area subplot (ax[2])
-        ax[2].legend(
+        # Mirror legends on the right subplot (ax[2]) for consistency
+        legend_comp_r = ax[2].legend(
             handles=color_handles,
             title="Component",
-            loc="upper right",
+            loc="upper left",
+            bbox_to_anchor=(0, 1),
             fontsize=15,
             title_fontsize=15,
             ncol=2,
         )
+        ax[2].legend(
+            handles=hatch_handles,
+            title="Encoding",
+            loc="upper right",
+            bbox_to_anchor=(1, 1),
+            fontsize=15,
+            title_fontsize=15,
+        )
+        ax[2].add_artist(legend_comp_r)
+
 
     # set the y scale to log scale
+    ax[0].set_yscale("log")
+    ax0_right.set_yscale("log")
     if log_scale:
-        ax[0].set_yscale("log")
         ax[1].set_yscale("log")
-        # ax[2].set_yscale("log")
+        ax[2].set_yscale("log")
         if not disable_right_axis:
-            ax0_right.set_yscale("log")
             ax1_right.set_yscale("log")
+            ax2_right.set_yscale("log")
 
     # increase x/y tick font size
-    plt.setp(ax[0].get_xticklabels(), fontsize=15)
     plt.setp(ax[1].get_xticklabels(), fontsize=15)
-    plt.setp(ax[0].get_yticklabels(), fontsize=15)
-    plt.setp(ax[1].get_yticklabels(), fontsize=15)
     plt.setp(ax[2].get_xticklabels(), fontsize=15)
+    plt.setp(ax[1].get_yticklabels(), fontsize=15)
     plt.setp(ax[2].get_yticklabels(), fontsize=15)
+    plt.setp(ax[0].get_xticklabels(), fontsize=15)
+    plt.setp(ax[0].get_yticklabels(), fontsize=15)
+    plt.setp(ax0_right.get_yticklabels(), fontsize=15)
     if not disable_right_axis:
-        plt.setp(ax0_right.get_yticklabels(), fontsize=15)
         plt.setp(ax1_right.get_yticklabels(), fontsize=15)
+        plt.setp(ax2_right.get_yticklabels(), fontsize=15)
 
     # set the y range
     # ax[0].set_ylim(1e3, 1e11)
-    ax[1].set_ylim(1e3, 1e12)
-    ax[2].set_ylim(0, 12)
+    ax[2].set_ylim(1e3, 1e12)
+    ax[0].set_ylim(1e-4, 1e1)
+    ax0_right.set_ylim(1e-4, 1e1)
 
     # rotate the x ticklabels
     # plt.setp(ax[0].get_xticklabels(), rotation=45, ha="right", rotation_mode="anchor")
@@ -458,12 +476,12 @@ def plot_results_breakdown_in_bar_chart(
     # plt.setp(ax[2].get_xticklabels(), rotation=45, ha="right", rotation_mode="anchor")
 
     # add grid and put grid below axis
-    ax[0].grid(which="both")
-    ax[0].set_axisbelow(True)
     ax[1].grid(which="both")
     ax[1].set_axisbelow(True)
     ax[2].grid(which="both")
     ax[2].set_axisbelow(True)
+    ax[0].grid(which="both")
+    ax[0].set_axisbelow(True)
     plt.tight_layout()
     Path("./outputs").mkdir(parents=True, exist_ok=True)
     plt.savefig(f"./outputs/expr_{title}.png", dpi=300)
@@ -487,13 +505,13 @@ if __name__ == "__main__":
         [4000, 0.015, 1, False, True],  # MaxCut
         [200, 2 * ((200**0.5) - 1) / 199, 16, True, True],  # TSP
         [8000, 2 * ((8000**0.5) - 1) / 7999, 16, True, True],  # TSP
-        [200, 28 / 100, 3, True, False],  # Sudoku
+        [200, 28 / 200, 3, True, False],  # Sudoku
         [729, 28 / 729, 3, True, False],  # Sudoku
         [64, 1, 16, True, False],  # MIMO
         [256, 1, 16, True, False],  # MIMO
     ]
     benchmark_name_in_list = [f"{pb_spec[0]}" for pb_spec in pb_pool]
-    d2_in_list = [1, 8, 32, 64, 100, 256, 512]
+    d2_in_list = [1, 8, 32, 100, 256, 512]
 
     # general settings
     sram_size_in_KB = 160
@@ -517,6 +535,13 @@ if __name__ == "__main__":
     topsmm2_macro_in_list = [[] for _ in range(len(d2_in_list))]
     latency_mismatch_in_list = [[] for _ in range(len(d2_in_list))]
     energy_mismatch_in_list = [[] for _ in range(len(d2_in_list))]
+    tops_peak_macro_in_list = [[] for _ in range(len(d2_in_list))]
+    tops_peak_system_in_list = [[] for _ in range(len(d2_in_list))]
+    topsmm2_peak_macro_in_list = [[] for _ in range(len(d2_in_list))]
+    topsmm2_peak_system_in_list = [[] for _ in range(len(d2_in_list))]
+    topsw_peak_macro_in_list = [[] for _ in range(len(d2_in_list))]
+    topsw_peak_system_in_list = [[] for _ in range(len(d2_in_list))]
+    num_mac = [f"{d2 * num_macros}" for d2 in d2_in_list]
     title = f"MAC_experiment_{encoding}_encoding"
     pbar = tqdm.tqdm(total=len(pb_pool) * len(d2_in_list), ascii="░▒█")
     for pb_spec in pb_pool:
@@ -628,6 +653,13 @@ if __name__ == "__main__":
             latency_mismatch_in_list[d2_idx].append(latency_mismatch)
             energy_mismatch = energy_to_solution / cme["energy_breakdown_plot"]["mac"]
             energy_mismatch_in_list[d2_idx].append(energy_mismatch)
+            # peak metrics
+            tops_peak_macro_in_list[d2_idx].append(cme["tops_peak_macro"])
+            tops_peak_system_in_list[d2_idx].append(cme["tops_peak_system"])
+            topsmm2_peak_macro_in_list[d2_idx].append(cme["topsmm2_peak_macro"])
+            topsmm2_peak_system_in_list[d2_idx].append(cme["topsmm2_peak_system"])
+            topsw_peak_macro_in_list[d2_idx].append(cme["topsw_peak_macro"])
+            topsw_peak_system_in_list[d2_idx].append(cme["topsw_peak_system"])
             pbar.update(1)
     pbar.close()
     # plot the results
@@ -645,16 +677,23 @@ if __name__ == "__main__":
         area_in_list=area_in_list,
         area_breakdown_in_list=area_breakdown_in_list,
         topsw_in_list=topsw_in_list,
+        tops_peak_macro_in_list=tops_peak_macro_in_list,
+        tops_peak_system_in_list=tops_peak_system_in_list,
+        topsmm2_peak_macro_in_list=topsmm2_peak_macro_in_list,
+        topsmm2_peak_system_in_list=topsmm2_peak_system_in_list,
+        topsw_peak_macro_in_list=topsw_peak_macro_in_list,
+        topsw_peak_system_in_list=topsw_peak_system_in_list,
+        num_mac=num_mac,
         log_scale=True,
         disable_right_axis=True,
         showing_legend=False,
         showing_annotation=False,
     )
-    plot_perf_ratio_in_curve(
-        latency_mismatch_in_list=topsmm2_in_list,
-        energy_mismatch_in_list=topsw_in_list,
-        targeted_annotation_idx=1,  # only annotate neighbor encoding
-        benchmark_name_in_list=benchmark_name_in_list,
-        title=f"{title}",
-        log_scale=True,
-    )
+    # plot_perf_ratio_in_curve(
+    #     latency_mismatch_in_list=latency_mismatch_in_list,
+    #     energy_mismatch_in_list=energy_mismatch_in_list,
+    #     targeted_annotation_idx=5,
+    #     benchmark_name_in_list=benchmark_name_in_list,
+    #     title=f"{title}",
+    #     log_scale=False,
+    # )
