@@ -64,7 +64,7 @@ Since cost model validation is important for analytical simulation framework, we
 
 ## **Re-generate the results in the paper**
 
-To re-generate the figures of the ablation studies in the paper, you can run the following scripts:
+To re-generate the figures of the case studies in the paper, you can run the following scripts:
 
-- [exp_encoding.py](./exp_encoding.py): the script for the encoding ablation study.
-- [exp_mac.py](./exp_mac.py): the script for the MAC parallelism study.
+- [exp_mac.py](./exp_mac.py): the script for the first case study on MAC parallelism analysis.
+- [exp_encoding.py](./exp_encoding.py): the script for the second case study on the compression method analysis.
