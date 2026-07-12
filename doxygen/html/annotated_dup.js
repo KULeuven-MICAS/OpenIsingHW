@@ -3,10 +3,6 @@ var annotated_dup =
     [ "accelerator_parser", "namespaceaccelerator__parser.html", [
       [ "AcceleratorParserStage", "classaccelerator__parser_1_1AcceleratorParserStage.html", "classaccelerator__parser_1_1AcceleratorParserStage" ]
     ] ],
-    [ "aimc_cost_model", "namespaceaimc__cost__model.html", [
-      [ "ADC", "classaimc__cost__model_1_1ADC.html", "classaimc__cost__model_1_1ADC" ],
-      [ "DAC", "classaimc__cost__model_1_1DAC.html", "classaimc__cost__model_1_1DAC" ]
-    ] ],
     [ "architecture", "namespacearchitecture.html", [
       [ "accelerator", "namespacearchitecture_1_1accelerator.html", [
         [ "Accelerator", "classarchitecture_1_1accelerator_1_1Accelerator.html", "classarchitecture_1_1accelerator_1_1Accelerator" ]
@@ -51,17 +47,6 @@ var annotated_dup =
     ] ],
     [ "cost_model_evaluation", "namespacecost__model__evaluation.html", [
       [ "CostModelStage", "classcost__model__evaluation_1_1CostModelStage.html", "classcost__model__evaluation_1_1CostModelStage" ]
-    ] ],
-    [ "dimc_cost_model", "namespacedimc__cost__model.html", [
-      [ "UnitNor2", "classdimc__cost__model_1_1UnitNor2.html", "classdimc__cost__model_1_1UnitNor2" ],
-      [ "UnitNand2", "classdimc__cost__model_1_1UnitNand2.html", "classdimc__cost__model_1_1UnitNand2" ],
-      [ "UnitXor2", "classdimc__cost__model_1_1UnitXor2.html", "classdimc__cost__model_1_1UnitXor2" ],
-      [ "UnitDff", "classdimc__cost__model_1_1UnitDff.html", "classdimc__cost__model_1_1UnitDff" ],
-      [ "Multiplier", "classdimc__cost__model_1_1Multiplier.html", "classdimc__cost__model_1_1Multiplier" ],
-      [ "MultiplierArray", "classdimc__cost__model_1_1MultiplierArray.html", "classdimc__cost__model_1_1MultiplierArray" ],
-      [ "Adder", "classdimc__cost__model_1_1Adder.html", "classdimc__cost__model_1_1Adder" ],
-      [ "AdderTree", "classdimc__cost__model_1_1AdderTree.html", "classdimc__cost__model_1_1AdderTree" ],
-      [ "MemoryInstance", "classdimc__cost__model_1_1MemoryInstance.html", "classdimc__cost__model_1_1MemoryInstance" ]
     ] ],
     [ "onnx_model_parser", "namespaceonnx__model__parser.html", [
       [ "ONNXModelParserStage", "classonnx__model__parser_1_1ONNXModelParserStage.html", "classonnx__model__parser_1_1ONNXModelParserStage" ]

@@ -3,13 +3,9 @@ var hierarchy =
     [ "Accelerator", "classarchitecture_1_1accelerator_1_1Accelerator.html", null ],
     [ "AcceleratorFactory", "classzigzag_1_1parser_1_1accelerator__factory_1_1AcceleratorFactory.html", null ],
     [ "AcceleratorValidator", "classzigzag_1_1parser_1_1accelerator__validator_1_1AcceleratorValidator.html", null ],
-    [ "ADC", "classaimc__cost__model_1_1ADC.html", null ],
-    [ "Adder", "classdimc__cost__model_1_1Adder.html", null ],
-    [ "AdderTree", "classdimc__cost__model_1_1AdderTree.html", null ],
     [ "CactiConfig", "classarchitecture_1_1get__cacti__cost_1_1CactiConfig.html", null ],
     [ "CactiParser", "classcacti__parser_1_1CactiParser.html", null ],
     [ "Constants", "classzigzag_1_1datatypes_1_1Constants.html", null ],
-    [ "DAC", "classaimc__cost__model_1_1DAC.html", null ],
     [ "DataMovePattern", "classzigzag_1_1mapping_1_1data__movement_1_1DataMovePattern.html", null ],
     [ "Exception", null, [
       [ "NoValidLoopOrderingFoundException", "classzigzag_1_1opt_1_1loma_1_1engine_1_1NoValidLoopOrderingFoundException.html", null ],
@@ -40,7 +36,6 @@ var hierarchy =
     [ "MemoryAllocator", "classzigzag_1_1opt_1_1loma_1_1memory__allocator_1_1MemoryAllocator.html", null ],
     [ "MemoryFactory", "classzigzag_1_1parser_1_1accelerator__factory_1_1MemoryFactory.html", null ],
     [ "MemoryInstance", "classarchitecture_1_1memory__instance_1_1MemoryInstance.html", null ],
-    [ "MemoryInstance", "classdimc__cost__model_1_1MemoryInstance.html", null ],
     [ "MemoryLevel", "classarchitecture_1_1memory__level_1_1MemoryLevel.html", null ],
     [ "MemoryPort", "classarchitecture_1_1memory__port_1_1MemoryPort.html", null ],
     [ "metaclass", null, [
@@ -121,8 +116,6 @@ var hierarchy =
       [ "WorkloadABC", "classzigzag_1_1workload_1_1workload__abc_1_1WorkloadABC.html", null ],
       [ "WorkloadNoDummyABC", "classzigzag_1_1workload_1_1workload__abc_1_1WorkloadNoDummyABC.html", null ]
     ] ],
-    [ "Multiplier", "classdimc__cost__model_1_1Multiplier.html", null ],
-    [ "MultiplierArray", "classdimc__cost__model_1_1MultiplierArray.html", null ],
     [ "ONNXModelParser", "classzigzag_1_1parser_1_1onnx_1_1onnx__model__parser_1_1ONNXModelParser.html", null ],
     [ "OnnxTensorType", "classzigzag_1_1parser_1_1onnx_1_1utils_1_1OnnxTensorType.html", null ],
     [ "OperationalUnit", "classarchitecture_1_1operational__unit_1_1OperationalUnit.html", [
@@ -147,10 +140,6 @@ var hierarchy =
       ] ]
     ] ],
     [ "TemporalMapping", "classzigzag_1_1mapping_1_1temporal__mapping_1_1TemporalMapping.html", null ],
-    [ "UnitDff", "classdimc__cost__model_1_1UnitDff.html", null ],
-    [ "UnitNand2", "classdimc__cost__model_1_1UnitNand2.html", null ],
-    [ "UnitNor2", "classdimc__cost__model_1_1UnitNor2.html", null ],
-    [ "UnitXor2", "classdimc__cost__model_1_1UnitXor2.html", null ],
     [ "WorkloadFactory", "classzigzag_1_1parser_1_1workload__factory_1_1WorkloadFactory.html", null ],
     [ "WorkloadValidator", "classzigzag_1_1parser_1_1workload__validator_1_1WorkloadValidator.html", null ],
     [ "ABC", null, [

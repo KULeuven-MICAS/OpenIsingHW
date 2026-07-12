@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['upgraded_5fvalidator_2epy_1470',['upgraded_validator.py',['../upgraded__validator_8py.html',1,'']]],
-  ['utils_2epy_1471',['utils.py',['../mapping_2utils_8py.html',1,'(Global Namespace)'],['../parser_2onnx_2utils_8py.html',1,'(Global Namespace)'],['../utils_8py.html',1,'(Global Namespace)']]]
+  ['visualization_2epy_1250',['visualization.py',['../visualization_8py.html',1,'']]]
 ];

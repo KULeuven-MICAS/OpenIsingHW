@@ -1,8 +1,6 @@
 var searchData=
 [
-  ['plot_5fcme_2epy_1450',['plot_cme.py',['../plot__cme_8py.html',1,'']]],
-  ['plot_5ftemporal_5fmapping_2epy_1451',['plot_temporal_mapping.py',['../plot__temporal__mapping_8py.html',1,'']]],
-  ['port_5factivity_2epy_1452',['port_activity.py',['../port__activity_8py.html',1,'']]],
-  ['prim_5fcaefa_2epy_1453',['prim_caefa.py',['../prim__caefa_8py.html',1,'']]],
-  ['print_5fmapping_2epy_1454',['print_mapping.py',['../print__mapping_8py.html',1,'']]]
+  ['readme_2emd_1235',['README.md',['../README_8md.html',1,'']]],
+  ['reduce_5fstages_2epy_1236',['reduce_stages.py',['../reduce__stages_8py.html',1,'']]],
+  ['run_5fopt_5fstages_2epy_1237',['run_opt_stages.py',['../run__opt__stages_8py.html',1,'']]]
 ];

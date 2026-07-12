@@ -1,3 +1,0 @@
-<map id="calculate_delay_lsb" name="calculate_delay_lsb">
-<area shape="rect" id="node1" title="delay: The delay cost for LSB (unit: ns) (best&#45;case delay, also equals to the delay for Tsum of 1&#45;b a..." alt="" coords="5,29,156,56"/>
-</map>
