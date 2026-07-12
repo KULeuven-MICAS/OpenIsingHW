@@ -1,4 +1,4 @@
-# **CMOS-based Digital Ising Accelerators' Model Extraction and Validation**
+## CMOS-based Digital (Clock-based) Ising Accelerators' Model Extraction and Validation
 
 Date: 2026/07/12
 

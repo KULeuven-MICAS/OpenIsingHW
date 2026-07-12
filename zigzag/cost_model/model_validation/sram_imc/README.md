@@ -1,8 +1,8 @@
-## In-Memory Computing Model Extraction and Validation
+## CMOS-based In-Memory Computing (IMC) Accelerators' Model Extraction and Validation
 
 Date: 2024/3/14
 
-This folder is where we did cost model extraction and validation for AIMC and DIMC in the [ICCAD'23 paper](https://ieeexplore.ieee.org/document/10323763).
+This folder is where we did cost model extraction and validation for AIMC (analog IMC) and DIMC (digital IMC) in the [ICCAD'23 paper](https://ieeexplore.ieee.org/document/10323763).
 
 To see the validation details, 
 for AIMC model, you can run `python aimc_validation.py` under folder `aimc_validation/22-28nm/`.
