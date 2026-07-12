@@ -7,7 +7,7 @@ var prim__caefa_8py =
     [ "latency_normalize", "prim__caefa_8py.html#a65624db93dc22bea201169b28513ee58", null ],
     [ "level", "prim__caefa_8py.html#afde8e18a788ccc92fc61cab298bca7e3", null ],
     [ "log_scale", "prim__caefa_8py.html#a4d608df7007db7d899756502d9cfbb07", null ],
-    [ "logging_format", "prim__caefa_8py.html#ad5100ab88b415b14787935369c576658", null ],
+    [ "logging_format", "prim__caefa_8py.html#aeaf7f835dbde9a595c2a0d07581ccaa6", null ],
     [ "logging_level", "prim__caefa_8py.html#a05b240734aa0ab5756d163cc6b03d6e1", null ],
     [ "output_file", "prim__caefa_8py.html#a8691fbda845191debece7688e06e3654", null ],
     [ "text_type", "prim__caefa_8py.html#ae388b6f61424eb7c470064f732bda4a8", null ],

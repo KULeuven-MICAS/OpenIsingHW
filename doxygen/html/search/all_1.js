@@ -46,7 +46,7 @@ var searchData=
   ['aimc_5fvalidation_2epy_63',['aimc_validation.py',['../aimc__validation_8py.html',1,'']]],
   ['all_5fcomponent_5fnames_5fset_64',['all_component_names_set',['../namespacevalidation__forpaper.html#ae4289317b184f37360a5ec7f2223b96b',1,'validation_forpaper']]],
   ['all_5fcontained_5flayer_5fdims_65',['all_contained_layer_dims',['../classzigzag_1_1mapping_1_1spatial__mapping_1_1SpatialMapping.html#af6253368187377a38089c8a0b03babf7',1,'zigzag::mapping::spatial_mapping::SpatialMapping']]],
-  ['all_5flegend_5fhandles_66',['all_legend_handles',['../namespacevalidation__forpaper.html#aae63b4fb30634df8a4204e6c03c15726',1,'validation_forpaper']]],
+  ['all_5flegend_5fhandles_66',['all_legend_handles',['../namespacevalidation__forpaper.html#a152b85ef61ebd27b56cd1b3b1c3dcbc5',1,'validation_forpaper']]],
   ['all_5fsimple_5fpaths_67',['all_simple_paths',['../classzigzag_1_1utils_1_1DiGraphWrapper.html#aaf1f2a6d20cba7b741785602755b8a72',1,'zigzag::utils::DiGraphWrapper']]],
   ['allocate_5fnode_68',['allocate_node',['../classzigzag_1_1opt_1_1loma_1_1memory__allocator_1_1MemoryAllocator.html#a592ec75b08e20f7e130c1d072beefd93',1,'zigzag::opt::loma::memory_allocator::MemoryAllocator']]],
   ['allocation_5fregex_69',['ALLOCATION_REGEX',['../classzigzag_1_1parser_1_1accelerator__validator_1_1AcceleratorValidator.html#a374503a1db81c171833a2a53a60b6ec6',1,'zigzag::parser::accelerator_validator::AcceleratorValidator']]],

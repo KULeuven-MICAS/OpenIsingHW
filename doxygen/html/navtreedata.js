@@ -59,7 +59,7 @@ var NAVTREEINDEX =
 "classzigzag_1_1parser_1_1onnx_1_1onnx__operator__parser_1_1ONNXOperatorParser.html#a41969c5f5e031c48fb8a91a78073bd28",
 "classzigzag_1_1workload_1_1layer__node_1_1LayerNode.html#a613041066431aecbd2d40988fb5169f8",
 "memory__port_8py.html",
-"visualization_2graph_2memory__hierarchy_8py.html"
+"visualization_2graph_2memory__hierarchy_8py.html#a5392ff197dcb1a5594d57ef527ace530"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

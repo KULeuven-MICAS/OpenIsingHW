@@ -5,7 +5,7 @@ var rtl_8py =
     [ "format", "rtl_8py.html#a387137c43ed9616d39ba90e890d181eb", null ],
     [ "latency_normalize", "rtl_8py.html#a65624db93dc22bea201169b28513ee58", null ],
     [ "level", "rtl_8py.html#afde8e18a788ccc92fc61cab298bca7e3", null ],
-    [ "logging_format", "rtl_8py.html#ad5100ab88b415b14787935369c576658", null ],
+    [ "logging_format", "rtl_8py.html#aeaf7f835dbde9a595c2a0d07581ccaa6", null ],
     [ "logging_level", "rtl_8py.html#a05b240734aa0ab5756d163cc6b03d6e1", null ],
     [ "output_file", "rtl_8py.html#a8691fbda845191debece7688e06e3654", null ],
     [ "parents", "rtl_8py.html#acb6c1e7263db3bfb5739c8e7b04448cd", null ],

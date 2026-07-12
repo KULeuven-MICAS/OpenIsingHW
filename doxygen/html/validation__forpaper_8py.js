@@ -1,7 +1,7 @@
 var validation__forpaper_8py =
 [
     [ "all_component_names_set", "validation__forpaper_8py.html#ae4289317b184f37360a5ec7f2223b96b", null ],
-    [ "all_legend_handles", "validation__forpaper_8py.html#aae63b4fb30634df8a4204e6c03c15726", null ],
+    [ "all_legend_handles", "validation__forpaper_8py.html#a152b85ef61ebd27b56cd1b3b1c3dcbc5", null ],
     [ "ax", "validation__forpaper_8py.html#a8fa675eb2fcec5b95d9d21c670da7f30", null ],
     [ "axes", "validation__forpaper_8py.html#addecde06ced656af71c7c68c4e780fe8", null ],
     [ "axis", "validation__forpaper_8py.html#accc088009d44c521706aa98d6387ee21", null ],
@@ -14,7 +14,6 @@ var validation__forpaper_8py =
     [ "component_color_map", "validation__forpaper_8py.html#a726e1adb1f0116a5391ec8364878ccdd", null ],
     [ "component_colors_hex", "validation__forpaper_8py.html#a6012ed2b8a11bbca4fb62d5f74c69c8c", null ],
     [ "current_bottom", "validation__forpaper_8py.html#a73d4f1a4746e560dd7e684e0acf9ea9c", null ],
-    [ "False", "validation__forpaper_8py.html#a36cde68b055f3f2ee671020af4ccf4e2", null ],
     [ "fig", "validation__forpaper_8py.html#a64aa603bc3c6c1587e7c6542452481ac", null ],
     [ "fig_height", "validation__forpaper_8py.html#a6e2501985d5bdc52435e4df159e841d7", null ],
     [ "fig_width", "validation__forpaper_8py.html#a1f0459359f3cc3586ef4e61ea029bb98", null ],
