@@ -1,0 +1,24 @@
+var searchData=
+[
+  ['r_5fbw_2083',['r_bw',['../classdimc__cost__model_1_1MemoryInstance.html#af89366a61b9ee0794d1428b2fe35fc3c',1,'dimc_cost_model::MemoryInstance']]],
+  ['r_5fbw_5fmin_2084',['r_bw_min',['../classdimc__cost__model_1_1MemoryInstance.html#ae80c294c818332480b21f83d6ed5c141',1,'dimc_cost_model::MemoryInstance']]],
+  ['r_5fcost_2085',['r_cost',['../classarchitecture_1_1memory__instance_1_1MemoryInstance.html#a6700ef6022c4d3b47bc8853b9e3bbda5',1,'architecture::memory_instance::MemoryInstance']]],
+  ['r_5fenergy_2086',['r_energy',['../classdimc__cost__model_1_1MemoryInstance.html#a195109e94b72a08107a05e805b47f734',1,'dimc_cost_model::MemoryInstance']]],
+  ['r_5floop_5fsize_5fcabl_2087',['r_loop_size_cabl',['../classzigzag_1_1mapping_1_1mapping_1_1Mapping.html#a25bdd21ac5d0b711f5ab38fbf1d6e447',1,'zigzag::mapping::mapping::Mapping']]],
+  ['r_5floop_5fsize_5fcabl2_2088',['r_loop_size_cabl2',['../classzigzag_1_1mapping_1_1mapping_1_1Mapping.html#ab6a155ce3f037b3e56df151026bbfa5f',1,'zigzag::mapping::mapping::Mapping']]],
+  ['r_5floop_5fsize_5fper_5flevel_2089',['r_loop_size_per_level',['../classzigzag_1_1mapping_1_1mapping_1_1Mapping.html#abb12dbcbeff3a85356700fd461f54608',1,'zigzag::mapping::mapping::Mapping']]],
+  ['r_5floop_5fsize_5fper_5flevel2_2090',['r_loop_size_per_level2',['../classzigzag_1_1mapping_1_1mapping_1_1Mapping.html#ae15b3ed50bb3e0b1a5c3e600f910c526',1,'zigzag::mapping::mapping::Mapping']]],
+  ['r_5fport_2091',['r_port',['../classdimc__cost__model_1_1MemoryInstance.html#abd31001fe0e4ed857ada1d35228bf86a',1,'dimc_cost_model::MemoryInstance']]],
+  ['rd_5fout_5fto_5fhigh_2092',['RD_OUT_TO_HIGH',['../classarchitecture_1_1memory__port_1_1DataDirection.html#a217bdac10e8a2df8d0dec0da5611522d',1,'architecture::memory_port::DataDirection']]],
+  ['rd_5fout_5fto_5flow_2093',['RD_OUT_TO_LOW',['../classarchitecture_1_1memory__port_1_1DataDirection.html#a5e2eb23a33bc93989900bbd185cee573',1,'architecture::memory_port::DataDirection']]],
+  ['read_2094',['READ',['../classarchitecture_1_1memory__port_1_1MemoryPortType.html#acbcf3527e6c34e62bd25475d6a3b34b6',1,'architecture::memory_port::MemoryPortType']]],
+  ['read_5fenergy_2095',['read_energy',['../classarchitecture_1_1memory__level_1_1MemoryLevel.html#a238befec77ec294abe9464aea3d974b4',1,'architecture::memory_level::MemoryLevel']]],
+  ['read_5fwrite_2096',['READ_WRITE',['../classarchitecture_1_1memory__port_1_1MemoryPortType.html#adacc009e03430b2b9d30a5af6363cfd8',1,'architecture::memory_port::MemoryPortType']]],
+  ['real_5fcycle_2097',['real_cycle',['../classzigzag_1_1cost__model_1_1port__activity_1_1PortActivity.html#a70d2aa7bc0e5d64103a48627a7fe1937',1,'zigzag.cost_model.port_activity.PortActivity.real_cycle()'],['../classzigzag_1_1cost__model_1_1port__activity_1_1PortBeginOrEndActivity.html#a70d2aa7bc0e5d64103a48627a7fe1937',1,'zigzag.cost_model.port_activity.PortBeginOrEndActivity.real_cycle()']]],
+  ['real_5fdata_5ftrans_5fcycle_2098',['real_data_trans_cycle',['../classzigzag_1_1cost__model_1_1cost__model_1_1CostModelEvaluation.html#af093ccb899c20f1b90e510d0db5d6d61',1,'zigzag::cost_model::cost_model::CostModelEvaluation']]],
+  ['req_5fmem_5fbw_5faver_2099',['REQ_MEM_BW_AVER',['../classzigzag_1_1mapping_1_1data__movement_1_1DataMoveAttr.html#a6bfbea0816efafbdaefd354344cd25e2',1,'zigzag::mapping::data_movement::DataMoveAttr']]],
+  ['req_5fmem_5fbw_5finst_2100',['REQ_MEM_BW_INST',['../classzigzag_1_1mapping_1_1data__movement_1_1DataMoveAttr.html#a8bcb204c50e72af6dc183dbcea886472',1,'zigzag::mapping::data_movement::DataMoveAttr']]],
+  ['resolution_2101',['resolution',['../classaimc__cost__model_1_1ADC.html#ac00c5e16d20d03148b6331ec09b431f6',1,'aimc_cost_model.ADC.resolution()'],['../classaimc__cost__model_1_1DAC.html#ac00c5e16d20d03148b6331ec09b431f6',1,'aimc_cost_model.DAC.resolution()']]],
+  ['runtime_2102',['runtime',['../classzigzag_1_1workload_1_1dummy__node_1_1DummyNode.html#aaca40adbdaefd717dec8cd204e5e59ea',1,'zigzag::workload::dummy_node::DummyNode']]],
+  ['rw_5fport_2103',['rw_port',['../classdimc__cost__model_1_1MemoryInstance.html#ad0be985088e94475d7db0ffd25485314',1,'dimc_cost_model::MemoryInstance']]]
+];
