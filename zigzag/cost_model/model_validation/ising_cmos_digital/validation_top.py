@@ -1,20 +1,19 @@
 import logging
 from pathlib import Path
+
 from api import plot_results_in_bar_chart_with_breakdown
-from sachi import validation_to_sachi
-from prim_caefa import validation_to_prim_caefa
-from fpga_asb_v2 import validation_to_fpga_asb_v2
 from fpga_asb import validation_to_fpga_asb
+from fpga_asb_v2 import validation_to_fpga_asb_v2
+from prim_caefa import validation_to_prim_caefa
 from rtl import validation_to_rtl
+from sachi import validation_to_sachi
 
 if __name__ == "__main__":
     """
     This script is used to validate the hardware performance model with the reported performance
     """
     logging_level = logging.INFO  # logging level
-    logging_format = (
-        "%(asctime)s - %(funcName)s +%(lineno)s - %(levelname)s - %(message)s"
-    )
+    logging_format = "%(asctime)s - %(funcName)s +%(lineno)s - %(levelname)s - %(message)s"
     logging.basicConfig(level=logging_level, format=logging_format)
 
     validation_list = ["sachi", "fpga_asb_v2", "fpga_asb_v1", "prim_caefa", "rtl"]

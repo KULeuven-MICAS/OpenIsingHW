@@ -1,5 +1,6 @@
-import matplotlib.pyplot as plt
 import logging
+
+import matplotlib.pyplot as plt
 import numpy as np
 
 
@@ -38,26 +39,16 @@ def plot_results_in_bar_chart_with_breakdown(
     # plotting the results
     fig, ax = plt.subplots(1, 2, figsize=(10, 4))
     benchmark_names = list(benchmark_dict.keys())
-    energy_model = [
-        benchmark_dict[benchmark]["energy_model"] for benchmark in benchmark_names
-    ]
-    energy_reported = [
-        benchmark_dict[benchmark]["energy"] for benchmark in benchmark_names
-    ]
-    latency_model = [
-        benchmark_dict[benchmark]["latency_model"] for benchmark in benchmark_names
-    ]
-    latency_reported = [
-        benchmark_dict[benchmark]["latency"] for benchmark in benchmark_names
-    ]
+    energy_model = [benchmark_dict[benchmark]["energy_model"] for benchmark in benchmark_names]
+    energy_reported = [benchmark_dict[benchmark]["energy"] for benchmark in benchmark_names]
+    latency_model = [benchmark_dict[benchmark]["latency_model"] for benchmark in benchmark_names]
+    latency_reported = [benchmark_dict[benchmark]["latency"] for benchmark in benchmark_names]
     min_latency_reported = min(latency_reported)
 
     if latency_normalize:
         # normalize the latency and energy to the minimum reported value
         latency_model = [latency / min_latency_reported for latency in latency_model]
-        latency_reported = [
-            latency / min_latency_reported for latency in latency_reported
-        ]
+        latency_reported = [latency / min_latency_reported for latency in latency_reported]
 
     if energy_normalize:
         min_energy_modeled = min(energy_model)
@@ -66,34 +57,18 @@ def plot_results_in_bar_chart_with_breakdown(
 
     # add average result to each list
     benchmark_names.append("Average")
-    energy_model.append(
-        np.prod(energy_model, dtype=np.float64) ** (1 / len(energy_model))
-    )
-    energy_reported.append(
-        np.prod(energy_reported, dtype=np.float64) ** (1 / len(energy_reported))
-    )
-    latency_model.append(
-        np.prod(latency_model, dtype=np.float64) ** (1 / len(latency_model))
-    )
-    latency_reported.append(
-        np.prod(latency_reported, dtype=np.float64) ** (1 / len(latency_reported))
-    )
+    energy_model.append(np.prod(energy_model, dtype=np.float64) ** (1 / len(energy_model)))
+    energy_reported.append(np.prod(energy_reported, dtype=np.float64) ** (1 / len(energy_reported)))
+    latency_model.append(np.prod(latency_model, dtype=np.float64) ** (1 / len(latency_model)))
+    latency_reported.append(np.prod(latency_reported, dtype=np.float64) ** (1 / len(latency_reported)))
 
     # compute the mismatch
     latency_mismatch = [
-        (
-            (latency_model[i] / latency_reported[i] - 1) * 100
-            if latency_reported[i] != 0
-            else 0
-        )
+        ((latency_model[i] / latency_reported[i] - 1) * 100 if latency_reported[i] != 0 else 0)
         for i in range(len(benchmark_names))
     ]
     energy_mismatch = [
-        (
-            (energy_model[i] / energy_reported[i] - 1) * 100
-            if energy_reported[i] != 0
-            else 0
-        )
+        ((energy_model[i] / energy_reported[i] - 1) * 100 if energy_reported[i] != 0 else 0)
         for i in range(len(benchmark_names))
     ]
 
@@ -110,30 +85,21 @@ def plot_results_in_bar_chart_with_breakdown(
             for i in range(len(benchmark_names[:-1]))
         ]
         latency_breakdown_sram.append(
-            np.prod(latency_breakdown_sram, dtype=np.float64)
-            ** (1 / len(latency_breakdown_sram))
+            np.prod(latency_breakdown_sram, dtype=np.float64) ** (1 / len(latency_breakdown_sram))
         )
         latency_breakdown_spin_update = [
-            (
-                latency_breakdown[i]["spin update"]
-                if latency_breakdown[i] is not None
-                else 0
-            )
+            (latency_breakdown[i]["spin update"] if latency_breakdown[i] is not None else 0)
             for i in range(len(benchmark_names[:-1]))
         ]
         latency_breakdown_spin_update.append(
-            np.prod(latency_breakdown_spin_update, dtype=np.float64)
-            ** (1 / len(latency_breakdown_spin_update))
+            np.prod(latency_breakdown_spin_update, dtype=np.float64) ** (1 / len(latency_breakdown_spin_update))
         )
 
         if latency_normalize:
             # normalize the breakdown to the minimum reported value
-            latency_breakdown_sram = [
-                latency / min_latency_reported for latency in latency_breakdown_sram
-            ]
+            latency_breakdown_sram = [latency / min_latency_reported for latency in latency_breakdown_sram]
             latency_breakdown_spin_update = [
-                latency / min_latency_reported
-                for latency in latency_breakdown_spin_update
+                latency / min_latency_reported for latency in latency_breakdown_spin_update
             ]
 
         ax[0].bar(
@@ -154,9 +120,7 @@ def plot_results_in_bar_chart_with_breakdown(
             edgecolor="black",
         )
     else:
-        ax[0].bar(
-            x, latency_model, width, label="MAC", color=colors["mac"], edgecolor="black"
-        )
+        ax[0].bar(x, latency_model, width, label="MAC", color=colors["mac"], edgecolor="black")
     ax[0].bar(
         [i + width for i in x],
         latency_reported,
@@ -200,17 +164,13 @@ def plot_results_in_bar_chart_with_breakdown(
             energy_breakdown[i]["mac"] if energy_breakdown[i] is not None else 0
             for i in range(len(benchmark_names[:-1]))
         ]
-        energy_breakdown_mac.append(
-            np.prod(energy_breakdown_mac, dtype=np.float64)
-            ** (1 / len(energy_breakdown_mac))
-        )
+        energy_breakdown_mac.append(np.prod(energy_breakdown_mac, dtype=np.float64) ** (1 / len(energy_breakdown_mac)))
         energy_breakdown_compare = [
             energy_breakdown[i]["compare"] if energy_breakdown[i] is not None else 0
             for i in range(len(benchmark_names[:-1]))
         ]
         energy_breakdown_compare.append(
-            np.prod(energy_breakdown_compare, dtype=np.float64)
-            ** (1 / len(energy_breakdown_compare))
+            np.prod(energy_breakdown_compare, dtype=np.float64) ** (1 / len(energy_breakdown_compare))
         )
 
         ax[1].bar(
@@ -231,9 +191,7 @@ def plot_results_in_bar_chart_with_breakdown(
             edgecolor="black",
         )
     else:
-        ax[1].bar(
-            x, energy_model, width, label="MAC", color=colors["mac"], edgecolor="black"
-        )
+        ax[1].bar(x, energy_model, width, label="MAC", color=colors["mac"], edgecolor="black")
     ax[1].bar(
         [i + width for i in x],
         energy_reported,
@@ -272,11 +230,7 @@ def plot_results_in_bar_chart_with_breakdown(
         for i in range(len(benchmark_names)):
             ax0_right.text(
                 i + width / 2,
-                (
-                    latency_mismatch[i] + 0.5
-                    if latency_mismatch[i] >= 0
-                    else latency_mismatch[i] - 1.5
-                ),
+                (latency_mismatch[i] + 0.5 if latency_mismatch[i] >= 0 else latency_mismatch[i] - 1.5),
                 f"{latency_mismatch[i]:.1f}%",
                 ha="center",
                 weight="normal",
@@ -285,11 +239,7 @@ def plot_results_in_bar_chart_with_breakdown(
             )
             ax1_right.text(
                 i + width / 2,
-                (
-                    energy_mismatch[i] + 0.5
-                    if energy_mismatch[i] >= 0
-                    else energy_mismatch[i] - 1
-                ),
+                (energy_mismatch[i] + 0.5 if energy_mismatch[i] >= 0 else energy_mismatch[i] - 1),
                 f"{energy_mismatch[i]:.1f}%",
                 ha="center",
                 weight="normal",

@@ -1,5 +1,6 @@
 import logging
 import math
+
 from api import plot_results_in_bar_chart_with_breakdown
 
 
@@ -204,9 +205,7 @@ def validation_to_fpga_asb_v2():
         num_pe_rows = info["num_pe_rows"]
         num_pe_cols = info["num_pe_cols"]
         latency_comm = benchmark_dict[benchmark]["latency_comm"]  # core-to-core latency
-        latency_comp = benchmark_dict[benchmark][
-            "latency_comp"
-        ]  # latency to go through the pipeline within a core
+        latency_comp = benchmark_dict[benchmark]["latency_comp"]  # latency to go through the pipeline within a core
         energy = benchmark_dict[benchmark]["energy"]  # reported energy (not valid)
         latency = benchmark_dict[benchmark]["latency"]  # reported latency
         # calculating the latency
@@ -257,9 +256,7 @@ if __name__ == "__main__":
     validating the modeling results to FPGA-aSB (FPL'19)
     """
     logging_level = logging.INFO  # logging level
-    logging_format = (
-        "%(asctime)s - %(funcName)s +%(lineno)s - %(levelname)s - %(message)s"
-    )
+    logging_format = "%(asctime)s - %(funcName)s +%(lineno)s - %(levelname)s - %(message)s"
     logging.basicConfig(level=logging_level, format=logging_format)
     plot_results_in_bar_chart_with_breakdown(
         validation_to_fpga_asb_v2(),

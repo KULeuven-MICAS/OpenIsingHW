@@ -1,5 +1,6 @@
 import logging
 from pathlib import Path
+
 from api import plot_results_in_bar_chart_with_breakdown
 
 
@@ -17,9 +18,7 @@ def validation_to_sachi():
     num_cores = 16
     compute_memory_depth = 80
     # tclk = 5  # ns (not used)
-    energy_per_gate = (
-        5 / 4 / 7
-    )  # pJ/gate@FreePDK45nm, Vdd=1V (extracted from the paper)
+    energy_per_gate = 5 / 4 / 7  # pJ/gate@FreePDK45nm, Vdd=1V (extracted from the paper)
     mac_energy_per_spin_per_degree_per_bit = energy_per_gate * 7
     compare_energy_per_bit = energy_per_gate
     # Benchmark settings
@@ -115,21 +114,11 @@ def validation_to_sachi():
         else:
             parallelism = 0  # not used
         # calculating the energy
-        mac_energy = (
-            mac_energy_per_spin_per_degree_per_bit
-            * w_pres
-            * num_js
-            * num_iterations
-            / 1000
-        )  # pJ -> nJ
-        compare_energy = (
-            compare_energy_per_bit * w_pres * num_spins * num_iterations / 1000
-        )  # pJ -> nJ
+        mac_energy = mac_energy_per_spin_per_degree_per_bit * w_pres * num_js * num_iterations / 1000  # pJ -> nJ
+        compare_energy = compare_energy_per_bit * w_pres * num_spins * num_iterations / 1000  # pJ -> nJ
         energy_model = mac_energy + compare_energy  # nJ
         # calculating the latency
-        latency_model = (
-            compute_memory_depth if parallelism == 0 else num_spins / parallelism
-        )
+        latency_model = compute_memory_depth if parallelism == 0 else num_spins / parallelism
         logging.info(
             f"Benchmark: {benchmark}, Latency (model): {latency_model} cycles, Latency (reported): {latency} cycles, "
             f"Energy (model): {energy_model} nJ, Energy (reported): {energy} nJ"
@@ -148,9 +137,7 @@ if __name__ == "__main__":
     validating the modeling results to SACHI (HPCA'24)
     """
     logging_level = logging.INFO  # logging level
-    logging_format = (
-        "%(asctime)s - %(funcName)s +%(lineno)s - %(levelname)s - %(message)s"
-    )
+    logging_format = "%(asctime)s - %(funcName)s +%(lineno)s - %(levelname)s - %(message)s"
     logging.basicConfig(level=logging_level, format=logging_format)
     Path("./outputs").mkdir(parents=True, exist_ok=True)
     plot_results_in_bar_chart_with_breakdown(

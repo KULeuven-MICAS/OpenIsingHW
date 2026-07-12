@@ -1,6 +1,7 @@
 import logging
-import numpy as np
 import math
+
+import numpy as np
 from api import plot_results_in_bar_chart_with_breakdown
 
 
@@ -15,15 +16,9 @@ def validation_to_prim_caefa():
     """
 
     # HW settings
-    IM_power_per_degree_per_bit = (
-        0.5757 / 2 * 1e-8
-    )  # W/bit@40nm, Vdd=1.1V extracted from the paper
-    BM_power_per_degree_per_bit = (
-        0.3091 / 2 * 1e-6
-    )  # W/bit@40nm, Vdd=1.1V extracted from the paper
-    SM_power_per_degree_per_bit = (
-        0.6110 / 4 * 1e-6
-    )  # W/bit@40nm, Vdd=1.1V extracted from the paper
+    IM_power_per_degree_per_bit = 0.5757 / 2 * 1e-8  # W/bit@40nm, Vdd=1.1V extracted from the paper
+    BM_power_per_degree_per_bit = 0.3091 / 2 * 1e-6  # W/bit@40nm, Vdd=1.1V extracted from the paper
+    SM_power_per_degree_per_bit = 0.6110 / 4 * 1e-6  # W/bit@40nm, Vdd=1.1V extracted from the paper
     # SRAM_width = 1024
     # Benchmark settings
     benchmark_dict = {
@@ -166,57 +161,36 @@ def validation_to_prim_caefa():
         # calculate the energy and latency
         latency_collect = {"sram": 1, "spin update": num_spins}
         if "IM" in benchmark:
-            power_model = (
-                IM_power_per_degree_per_bit
-                * packet_pres
-                * num_spins
-                * num_spins
-                * num_iterations
-            )
-            latency_collect["sram"] = (
-                np.ceil(num_spins * packet_pres / sram_setting["bw"])
-            ) * num_spins
+            power_model = IM_power_per_degree_per_bit * packet_pres * num_spins * num_spins * num_iterations
+            latency_collect["sram"] = (np.ceil(num_spins * packet_pres / sram_setting["bw"])) * num_spins
             # latency_model = IM_latency_model
         elif "BM" in benchmark:
-            power_model = (
-                BM_power_per_degree_per_bit * packet_pres * num_js * num_iterations
-            )
+            power_model = BM_power_per_degree_per_bit * packet_pres * num_js * num_iterations
             first_packet_bw = num_spins_bw * 2 + packet_pres
             other_packet_bw = num_spins_bw + packet_pres
             # latency_model = np.ceil(1 + (first_packet_bw + max_degree * other_packet_bw) / SRAM_width) \
             #                 / np.ceil(1 + num_spins * w_pres / SRAM_width)
-            num_packets_first_word = (
-                np.floor((sram_setting["bw"] - first_packet_bw) / other_packet_bw) + 1
-            )
+            num_packets_first_word = np.floor((sram_setting["bw"] - first_packet_bw) / other_packet_bw) + 1
             num_packets_other_word = np.floor(sram_setting["bw"] / other_packet_bw)
             for i in range(num_spins):
                 if degree_per_spin[i] <= num_packets_first_word:
                     latency_per_spin["latency_read_Jij"][i] = 1
                 else:
                     latency_per_spin["latency_read_Jij"][i] = (
-                        math.ceil(
-                            (degree_per_spin[i] - num_packets_first_word)
-                            / num_packets_other_word
-                        )
-                        + 1
+                        math.ceil((degree_per_spin[i] - num_packets_first_word) / num_packets_other_word) + 1
                     )
             if max(latency_per_spin["latency_read_Jij"]) > 2:
                 latency_per_spin["latency_read_Jij"] = [
-                    2 if degree == 1 else degree
-                    for degree in latency_per_spin["latency_read_Jij"]
+                    2 if degree == 1 else degree for degree in latency_per_spin["latency_read_Jij"]
                 ]
             latency_per_spin["latency_read_si"] = [0]
             latency_per_spin["latency_read_sj"] = [0]
             latency_collect["sram"] = sum(latency_per_spin["latency_read_Jij"])
         elif "SM" in benchmark:
-            power_model = (
-                SM_power_per_degree_per_bit * packet_pres * num_js * num_iterations
-            )
+            power_model = SM_power_per_degree_per_bit * packet_pres * num_js * num_iterations
             first_packet_bw = num_spins_bw * 2 + 1 + packet_pres
             other_packet_bw = num_spins_bw + packet_pres
-            num_packets_first_word = (
-                np.floor((sram_setting["bw"] - first_packet_bw) / other_packet_bw) + 1
-            )
+            num_packets_first_word = np.floor((sram_setting["bw"] - first_packet_bw) / other_packet_bw) + 1
             num_packets_other_word = np.floor(sram_setting["bw"] / other_packet_bw)
             remain_packets = num_packets_first_word
             remain_bits = sram_setting["bw"]
@@ -226,36 +200,21 @@ def validation_to_prim_caefa():
                 if degree_per_spin[i] <= remain_packets:
                     latency_per_spin["latency_read_Jij"][i] = 1
                     latency_per_spin["latency_read_sj"][i] = len(
-                        set(
-                            [
-                                math.floor(x / sram_setting["bw"])
-                                for x in sj_ID_sorted[i]
-                            ]
-                        )
+                        set([math.floor(x / sram_setting["bw"]) for x in sj_ID_sorted[i]])
                     )
                     if remain_cache_flag_en == 1:
                         remain_bits = remain_bits - degree_per_spin[i] * other_packet_bw
                     else:
                         remain_bits = (
-                            remain_bits
-                            - degree_per_spin[i] * other_packet_bw
-                            - (first_packet_bw - other_packet_bw)
+                            remain_bits - degree_per_spin[i] * other_packet_bw - (first_packet_bw - other_packet_bw)
                         )
                 else:
                     num_Jij_per_cycle = [remain_packets]
                     latency_per_spin["latency_read_Jij"][i] = (
-                        math.ceil(
-                            (degree_per_spin[i] - remain_packets)
-                            / num_packets_other_word
-                        )
-                        + 1
+                        math.ceil((degree_per_spin[i] - remain_packets) / num_packets_other_word) + 1
                     )
-                    num_Jij_last_cycle = (
-                        degree_per_spin[i] - remain_packets
-                    ) % num_packets_other_word
-                    remain_bits = (
-                        sram_setting["bw"] - num_Jij_last_cycle * other_packet_bw
-                    )
+                    num_Jij_last_cycle = (degree_per_spin[i] - remain_packets) % num_packets_other_word
+                    remain_bits = sram_setting["bw"] - num_Jij_last_cycle * other_packet_bw
                     for j in range(1, latency_per_spin["latency_read_Jij"][i]):
                         num_Jij_per_cycle.append(num_packets_other_word)
                     num_Jij_per_cycle.append(num_Jij_last_cycle)
@@ -263,15 +222,11 @@ def validation_to_prim_caefa():
                     latency_per_spin["latency_read_sj"][i] = 0
                     for j in range(latency_per_spin["latency_read_Jij"][i]):
                         cur_num_Jij_sum = int(num_Jij_sum + num_Jij_per_cycle[j])
-                        latency_per_spin["latency_read_sj"][i] = latency_per_spin[
-                            "latency_read_sj"
-                        ][i] + len(
+                        latency_per_spin["latency_read_sj"][i] = latency_per_spin["latency_read_sj"][i] + len(
                             set(
                                 [
                                     math.floor(x / sram_setting["bw"])
-                                    for x in sj_ID_sorted[i][
-                                        num_Jij_sum:cur_num_Jij_sum
-                                    ]
+                                    for x in sj_ID_sorted[i][num_Jij_sum:cur_num_Jij_sum]
                                 ]
                             )
                         )
@@ -279,33 +234,23 @@ def validation_to_prim_caefa():
 
                 if remain_bits < (num_spins_bw + 1):
                     remain_bits = sram_setting["bw"]
-                    remain_packets = (
-                        math.floor((remain_bits - first_packet_bw) / other_packet_bw)
-                        + 1
-                    )
+                    remain_packets = math.floor((remain_bits - first_packet_bw) / other_packet_bw) + 1
                     remain_cache_flag_en = 0
                 elif remain_bits < first_packet_bw:
                     remain_bits = sram_setting["bw"]
                     remain_packets = math.floor(remain_bits / other_packet_bw)
                     remain_cache_flag_en = 1
                 else:
-                    remain_packets = (
-                        math.floor((remain_bits - first_packet_bw) / other_packet_bw)
-                        + 1
-                    )
+                    remain_packets = math.floor((remain_bits - first_packet_bw) / other_packet_bw) + 1
                     remain_cache_flag_en = 0
-            latency_collect["sram"] = sum(
-                [num for sublist in latency_per_spin.values() for num in sublist]
-            )
+            latency_collect["sram"] = sum([num for sublist in latency_per_spin.values() for num in sublist])
 
         latency_model = sum(latency_collect.values())
         energy_model = power_model * latency_model * t_clk
         logging.info(
             f"Benchmark: {benchmark}, Latency (model): {latency_model} cycles, Latency (reported): {latency} cycles"
         )
-        logging.info(
-            f"Energy (model): {energy_model} nJ, Energy (reported): {energy} nJ"
-        )
+        logging.info(f"Energy (model): {energy_model} nJ, Energy (reported): {energy} nJ")
         bench["energy_model"] = energy_model
         bench["latency_model"] = latency_model
         bench["latency_breakdown"] = latency_collect
@@ -317,9 +262,7 @@ if __name__ == "__main__":
     validating the modeling results to PRIM CAEFA (HPCA'24)
     """
     logging_level = logging.INFO  # logging level
-    logging_format = (
-        "%(asctime)s - %(funcName)s +%(lineno)s - %(levelname)s - %(message)s"
-    )
+    logging_format = "%(asctime)s - %(funcName)s +%(lineno)s - %(levelname)s - %(message)s"
     logging.basicConfig(level=logging_level, format=logging_format)
     plot_results_in_bar_chart_with_breakdown(
         benchmark_dict=validation_to_prim_caefa(),

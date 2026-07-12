@@ -1,6 +1,8 @@
 import logging
 from pathlib import Path
+
 from api import plot_results_in_bar_chart_with_breakdown
+
 
 def validation_to_rtl():
     """
@@ -13,9 +15,7 @@ def validation_to_rtl():
     num_cores = 16
     pe_parallelism = 128
     reg_pipes = 2
-    energy_per_gate = (
-        5 / 4 / 7
-    )  # pJ/gate@FreePDK45nm, Vdd=1V (extracted from the paper)
+    energy_per_gate = 5 / 4 / 7  # pJ/gate@FreePDK45nm, Vdd=1V (extracted from the paper)
     mac_energy_per_spin_per_degree_per_bit = energy_per_gate * 7
     compare_energy_per_bit = energy_per_gate
     # Benchmark settings
@@ -104,22 +104,12 @@ def validation_to_rtl():
         latency = benchmark_dict[benchmark]["latency"]
         # adding additional modeling setting, when the problem size exceeds the compute memory size
         # calculating the energy
-        mac_energy = (
-            mac_energy_per_spin_per_degree_per_bit
-            * w_pres
-            * num_js
-            * num_iterations
-            / 1000
-        )  # pJ -> nJ
-        compare_energy = (
-            compare_energy_per_bit * w_pres * num_spins * num_iterations / 1000
-        )  # pJ -> nJ
+        mac_energy = mac_energy_per_spin_per_degree_per_bit * w_pres * num_js * num_iterations / 1000  # pJ -> nJ
+        compare_energy = compare_energy_per_bit * w_pres * num_spins * num_iterations / 1000  # pJ -> nJ
         energy_model = mac_energy + compare_energy  # nJ
         # calculating the latency
         cycles_per_spin = 1 if num_spins <= pe_parallelism else num_spins / pe_parallelism
-        latency_model = (
-            max(1, num_spins / num_cores) * cycles_per_spin + reg_pipes
-        ) * num_iterations
+        latency_model = (max(1, num_spins / num_cores) * cycles_per_spin + reg_pipes) * num_iterations
         logging.info(
             f"Benchmark: {benchmark}, Latency (model): {latency_model} cycles, Latency (reported): {latency} cycles, "
             f"Energy (model): {energy_model} nJ, Energy (reported): {energy} nJ"
@@ -132,14 +122,13 @@ def validation_to_rtl():
         }
     return benchmark_dict
 
+
 if __name__ == "__main__":
     """
     validating the modeling results to in-house RTL simulation results
     """
     logging_level = logging.INFO  # logging level
-    logging_format = (
-        "%(asctime)s - %(funcName)s +%(lineno)s - %(levelname)s - %(message)s"
-    )
+    logging_format = "%(asctime)s - %(funcName)s +%(lineno)s - %(levelname)s - %(message)s"
     logging.basicConfig(level=logging_level, format=logging_format)
     Path("./outputs").mkdir(parents=True, exist_ok=True)
     plot_results_in_bar_chart_with_breakdown(
