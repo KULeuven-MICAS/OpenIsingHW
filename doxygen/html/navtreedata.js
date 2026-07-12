@@ -29,7 +29,7 @@ var NAVTREE =
     [ "<strong>CMOS-based Digital Ising Accelerators' Model Extraction and Validation</strong>", "md__home_runner_work_OpenIsingHW_OpenIsingHW_zigzag_cost_model_model_validation_ising_cmos_digital_README.html", null ],
     [ "In-Memory Computing Model Extraction and Validation", "md__home_runner_work_OpenIsingHW_OpenIsingHW_zigzag_cost_model_model_validation_sram_imc_README.html", null ],
     [ "Package Functions", "namespacemembers.html", [
-      [ "All", "namespacemembers.html", null ],
+      [ "All", "namespacemembers.html", "namespacemembers_dup" ],
       [ "Functions", "namespacemembers_func.html", null ],
       [ "Variables", "namespacemembers_vars.html", null ]
     ] ],
@@ -57,7 +57,8 @@ var NAVTREEINDEX =
 "classzigzag_1_1mapping_1_1spatial__mapping_1_1SpatialMapping.html#a96e3f6220a6ab1c997e1072eeca43b9b",
 "classzigzag_1_1parser_1_1onnx_1_1onnx__operator__parser_1_1ONNXOperatorParser.html#a41969c5f5e031c48fb8a91a78073bd28",
 "classzigzag_1_1workload_1_1layer__node_1_1LayerNode.html#a613041066431aecbd2d40988fb5169f8",
-"model__extration__28nm_8py.html#a62c6bff57e718640518b28c8761f92ff"
+"model__extration__28nm_8py.html",
+"visualization_2graph_2memory__hierarchy_8py.html#a5392ff197dcb1a5594d57ef527ace530"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';
