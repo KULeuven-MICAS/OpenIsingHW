@@ -1,5 +1,6 @@
 ## CMOS-based In-Memory Computing (IMC) Accelerators' Model Extraction and Validation
 
+Author: Jiacong Sun
 Date: 2024/3/14
 
 This folder is where we did cost model extraction and validation for AIMC (analog IMC) and DIMC (digital IMC) in the [ICCAD'23 paper](https://ieeexplore.ieee.org/document/10323763).
