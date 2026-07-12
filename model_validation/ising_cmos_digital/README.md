@@ -1,6 +1,7 @@
 ## CMOS-based Digital (Clock-based) Ising Accelerators' Model Extraction and Validation
 
 Author: Jiacong Sun
+
 Date: 2026/07/12
 
 This folder is where we did cost model extraction and validation for 4 CMOS-based digital Ising accelerators and the RTL simulation in the ICCAD'26 paper [link to be added].

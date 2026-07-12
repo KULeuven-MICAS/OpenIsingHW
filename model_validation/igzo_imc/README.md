@@ -1,6 +1,7 @@
 ## IGZO-SRAM Hybrid Digital In-Memory Computing (DIMC) Accelerators' Model Extraction
 
 Author: Jiacong Sun
+
 Date: 2024/09/27
 
 This folder is where we defined the hardware template for a IGZO-SRAM hybrid DIMC in [the ISCAS'25 paper](https://ieeexplore.ieee.org/document/11043541). The IGZO serves as a high-density storage (replacing the dram in typical architecture). All others are the same as typical SRAM-based DIMC. Note that there is no explicit on-chip area cost for IGZO, since it is fabricated below the logic layer.
