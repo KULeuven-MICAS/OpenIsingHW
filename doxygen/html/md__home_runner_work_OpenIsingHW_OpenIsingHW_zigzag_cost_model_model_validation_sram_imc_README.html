@@ -7,7 +7,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>ZigZag - Deep Learning Hardware Design Space Exploration: In-Memory Computing Model Extraction and Validation</title>
+<title>ZigZag - Deep Learning Hardware Design Space Exploration: CMOS-based In-Memory Computing (IMC) Accelerators&#39; Model Extraction and Validation</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -85,11 +85,11 @@ $(document).ready(function(){initNavTree('md__home_runner_work_OpenIsingHW_OpenI
 
 <div class="PageDoc"><div class="header">
   <div class="headertitle">
-<div class="title">In-Memory Computing Model Extraction and Validation </div>  </div>
+<div class="title">CMOS-based In-Memory Computing (IMC) Accelerators' Model Extraction and Validation </div>  </div>
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><p>Date: 2024/3/14</p>
-<p>This folder is where we did cost model extraction and validation for AIMC and DIMC in the <a href="https://ieeexplore.ieee.org/document/10323763">ICCAD'23 paper</a>.</p>
+<p>This folder is where we did cost model extraction and validation for AIMC (analog IMC) and DIMC (digital IMC) in the <a href="https://ieeexplore.ieee.org/document/10323763">ICCAD'23 paper</a>.</p>
 <p>To see the validation details, for AIMC model, you can run <code>python aimc_validation.py</code> under folder <code>aimc_validation/22-28nm/</code>. For DIMC model, you can run <code>python model_extraction_28nm.py</code> under folder <code>dimc_validation/28nm/</code>, which will extract the best fitting value for energy/area/delay (tclk) model and the corresponding mismatch. You can also run <code>python dimc_validation.py</code>, which will get the mismatch value and cost breakdown for each validated work.</p>
 <h1>Cost Model Overview</h1>
 <p>Our SRAM-based In-Memory Computing model is a versatile, parameterized model designed to cater to both Analog IMC and Digital IMC. Since hardware costs are technology-node dependent, we have performed special calibration for the 28nm technology node. The model has been validated against 7 chips from the literature. A summary of the hardware settings for these chips is provided in the following table.</p>
