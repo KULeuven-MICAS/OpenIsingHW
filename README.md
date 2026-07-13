@@ -1,74 +1,74 @@
-# 🌀 ZigZag  
-[![linting: pylint](https://img.shields.io/badge/linting-pylint-yellowgreen)](https://github.com/pylint-dev/pylint)  
+# 📟**OpenIsingHW**
 
-**ZigZag** is a novel HW Architecture-Mapping Design Space Exploration (DSE) framework for Deep Learning (DL) accelerators. It bridges the gap between algorithmic DL decisions and their acceleration cost on specialized hardware, providing **fast and accurate HW cost estimation**. Through its advanced mapping engines, ZigZag automates the discovery of optimal mappings for complex DL computations on custom architectures.
+This repository aims at analyzing the system-level performance (like energy, latency and area) for Ising accelerators under variable applications.
 
-### 🌟 [**Explore Documentation**](https://kuleuven-micas.github.io/zigzag/)  
-### 📖 [**Start Tutorial**](https://github.com/KULeuven-MICAS/zigzag/tree/tutorial) 
+Instead of assuming perfect hardware utilization and unlimited peripheral memories, the framework considers the under-utilization due to suboptimal mapping and peripheral memory overhead.
 
----
+## **Features of the framework**
+- The first analytical system-level simulation framework for digital Ising accelerators.
+- Both serial-updating architecture and parallel-updating architecture are supported.
+- Graph sparsity is considered if weight compression is applied.
+- Different problem types and sizes can be flexibly configured.
 
-## ✨ Key Features  
+## **Supported Ising Problem Types and Features**
 
-✔ **ONNX Integration**: Directly parse ONNX models for seamless compatibility with modern deep learning workflows.  
-✔ **Flexible Hardware Architecture**: Supports multi-dimensional (>2D) MAC arrays, advanced interconnection patterns, and high-level memory structures.  
-✔ **Enhanced Cost Models**: Includes detailed energy and latency analysis for memories with variable port structures through inferred spatial and temporal data sharing and reuse patterns.  
-✔ **Modular and Extensible**: Fully revamped structure with object-oriented paradigms to support user-friendly extensions and interfaces.  
-✔ **Integrated In-Memory Computing Support**: Seamlessly define digital and analog in-memory-computing (IMC) cores via an intuitive user interface.  
-✔ **Comprehensive Output Options**: Outputs results in YAML format, enabling further analysis and integration.
+| Features | MaxCut | TSP | Sudoku | MIMO |
+|:-|:-|:-|:-|:-|
+| **Problem-specific weight** | Y | Y | N | N |
+| **Graph density** | appro. 0.015 | 0.05-0.25 | 0.04 | 1 |
+| **Weight precision** | 1b/2b | 10b-16b | 3b | ~16b |
+| **With magnetic field (h)** | N | Y | Y | Y |
+| **Typical problem size (M)** | 800-4,000 nodes | 10-100 cities | 81 cells | 4-32 users |
+| **Required Ising nodes (N)** | 800-4,000 | 100-10,000 | <729 | 8-256 |
+| **Average gragh degree** | 4-50 | 2 ($\sqrt{N}-1$) | 28 | N - 1
 
----
+## **Getting Started**
 
-## 🚀 Installation  
+### **Requirements**
+- **Python Version**: 3.12
+- **Python-deps**: Automatically installed via `pip` using the provided setup script.
 
-Visit the [Installation Guide](https://kuleuven-micas.github.io/zigzag/installation.html) for step-by-step instructions to set up ZigZag on your system.
+### **Setup**
+ 
+```bash
+cd openisinghw
+pip install -r ./requirements.txt
+source .setup
+```
 
----
+## **How to get results**
 
-## 📖 Getting Started  
+**[To be updated beblow]**
 
-Get up to speed with ZigZag using our resources:
-- Check out the [Getting Started Guide](https://kuleuven-micas.github.io/zigzag/getting-started.html).
-- Explore the [Jupyter Notebook Demo](https://github.com/ZigZag-Project/zigzag-demo) to see ZigZag in action.
+To simulate, just run:
+```bash
+python main.py
+```
 
----
+When evaluating a different workload or architecture, just modify the input files before run the command.
+Input configuration files (YAML) are within the folder [./inputs](./inputs/README.md) (please see the readme within the folder for further details):
 
-## 🔧 What’s Next  
+- **hardware**: the Ising hardware architecture specification, including parallelism, memories and weight compression method.
 
-We are continuously improving ZigZag to stay at the forefront of HW design space exploration. Here’s what we’re working on:  
+- **mapping**: the mapping constraint specification of the ising architecture.
 
-- 🧠 **ONNX Operator Support**: Expanding compatibility for modern generative AI workloads.  
-- 📂 **Novel Memory Models**: Integrating advanced memory models and compilers for better performance analysis.  
-- ⚙️ **Automatic Hardware Generation**: Enabling end-to-end generation of hardware configurations.  
-- 🚀 **Enhanced Mapping Methods**: Developing more efficient and intelligent mapping techniques.  
+- **workload**: the Ising workload specification, like problem size, average degree, variable precision.
 
-#### ⭐ Please consider starring this repository to stay up to date!  
+If the memory compiler is not available by hand, the repository has incorporated the open-sourced CACTI 6.0 for use. Just run the [get_cacti_cost.py](./get_cacti_cost.py) after modifying its memory specification.
 
----
+**Note**: CACTI is not a commercial memory compiler and its results may differ from real memory compiler.
 
-## 📚 Publication Pointers  
+## **Model validation**
 
-Learn more about the concepts behind ZigZag and its applications:
+Since cost model validation is important for analytical simulation framework, we have conducted several model validations against state-of-the-art accelerators. Relevant scripts are under the folder [./model_validation](./model_validation/README.md) (please see the readme within the folder for further details). The validation result is shown below.
 
-### The General Idea of ZigZag  
-- **[ZigZag: Enlarging Joint Architecture-Mapping Design Space Exploration for DNN Accelerators](https://ieeexplore.ieee.org/document/9360462)**  
-  L. Mei, P. Houshmand, V. Jain, S. Giraldo, M. Verhelst  
-  _IEEE Transactions on Computers_, vol. 70, no. 8, pp. 1160-1174, Aug. 2021.  
+![model validation plot](model_validation/ising_cmos_digital/validation.png)
 
-### Advanced Features and Extensions  
-- **[Uniform Latency Model for DNN Accelerators](https://lirias.kuleuven.be/retrieve/661303)**  
-  L. Mei, H. Liu, T. Wu, et al.  
-  _DATE 2022_.  
-- **[LOMA: Fast Auto-Scheduling on DNN Accelerators](https://ieeexplore.ieee.org/document/9458493)**  
-  A. Symons, L. Mei, M. Verhelst  
-  _AICAS 2021_.  
+## **Re-generate the results in the paper**
 
-For more publications and detailed case studies, refer to the full list in our [Documentation](https://kuleuven-micas.github.io/zigzag/).
+To re-generate the figures of the case studies in the paper, you can run the following scripts in python:
 
----
-
-## 💻 Contributing  
-
-We welcome contributions! Feel free to fork the repository, submit pull requests, or open issues. Check our [Contributing Guidelines](CONTRIBUTING.md) for more details.
-
----
+- [exp_mac.py](./exp_mac.py): the script for the first case study on MAC parallelism analysis.
+- [exp_encoding.py](./exp_encoding.py): the script for the second case study on the compression method analysis.
+- [exp_iteration.py](./exp_iteration.py): the script for the thrid case study on the solution quality analysis (please uncomment the wanted problem in the pb_pool).
+- [exp_simulation_time.py](./exp_simulation_time.py): the script for the simulation time comparison analysis.
